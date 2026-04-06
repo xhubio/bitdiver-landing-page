@@ -99,7 +99,7 @@
 
             <h2>StepNormal</h2>
             <p>The most common step type. A <code>StepNormal</code> runs once per test case in the suite. Each invocation receives its own test case context.</p>
-            <pre><code class="language-typescript">import { StepNormal } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { StepNormal } from '@xhubio/bitdiver-runner'
 
 class SendRequest extends StepNormal {
   async run() {
@@ -120,7 +120,7 @@ class SendRequest extends StepNormal {
 
             <h2>StepSingle</h2>
             <p>Runs once for the entire suite rather than per test case. Use this for shared setup/teardown operations like database seeding, environment provisioning, or aggregate reporting. A <code>StepSingle</code> has access to all test case environments at once.</p>
-            <pre><code class="language-typescript">import { StepSingle } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { StepSingle } from '@xhubio/bitdiver-runner'
 
 class ClearDatabase extends StepSingle {
   async run() {
@@ -140,7 +140,7 @@ class ClearDatabase extends StepSingle {
 
             <h2>StepTimed</h2>
             <p>Extends <code>StepNormal</code>. Instead of running immediately, a <code>StepTimed</code> waits until a specific time offset from a reference timestamp before executing. This is useful for simulating real-world timing, load testing, or coordinating actions across test cases.</p>
-            <pre><code class="language-typescript">import { StepTimed } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { StepTimed } from '@xhubio/bitdiver-runner'
 
 class SendAtTime extends StepTimed {
   getReferenceTime(): string {

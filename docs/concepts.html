@@ -90,7 +90,7 @@
             <p>This page explains the foundational concepts behind BitDiver: how its modules fit together, how steps execute, and how data flows through a test run.</p>
 
             <h2>Architecture Overview</h2>
-            <p>BitDiver is a single TypeScript package (<code>@bitdiver/runner</code>) composed of 7 modules that form a pipeline:</p>
+            <p>BitDiver is a single TypeScript package (<code>@xhubio/bitdiver-runner</code>) composed of 7 modules that form a pipeline:</p>
             <ul>
               <li><strong>Config</strong> &mdash; Loads and validates configuration using Zod schemas. Supports environment variable overrides, inline values, file-based defaults, and automatic secret masking.</li>
               <li><strong>Suite Builder</strong> &mdash; Reads YAML or JSON configuration files and constructs a suite definition. Handles timed file scanning and step generation from filename prefixes.</li>
@@ -143,7 +143,7 @@
 
             <h2>StepRegistry</h2>
             <p>The StepRegistry maps step names to their class implementations. Before the runner can execute a suite, every step name referenced in the suite definition must have a corresponding class registered in the StepRegistry.</p>
-            <pre><code class="language-typescript">import { StepRegistry } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { StepRegistry } from '@xhubio/bitdiver-runner'
 
 const registry = new StepRegistry()
 registry.registerStep({ stepName: 'login', step: LoginStep })

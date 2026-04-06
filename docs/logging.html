@@ -98,7 +98,7 @@
               <li><strong><code>LogAdapterFile</code></strong> &mdash; Filesystem storage organized by run, testcase, and step. Each execution creates a directory hierarchy that can be inspected after the run completes.</li>
               <li><strong><code>LogAdapterMemory</code></strong> &mdash; In-memory storage that collects all log entries in an array. Designed for testing scenarios where you need to assert on log output without filesystem or console side effects.</li>
             </ul>
-            <pre><code class="language-typescript">import { LogAdapterConsole, LogAdapterFile } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { LogAdapterConsole, LogAdapterFile } from '@xhubio/bitdiver-runner'
 
 const consoleAdapter = new LogAdapterConsole({ levelName: 'info' })
 const fileAdapter = new LogAdapterFile({ levelName: 'debug', dir: './logs' })</code></pre>
@@ -151,7 +151,7 @@ const fileAdapter = new LogAdapterFile({ levelName: 'debug', dir: './logs' })</c
 
             <h2>Custom Adapters</h2>
             <p>To send logs to a custom destination, implement the <code>LogAdapterInterface</code>. Your adapter must provide a <code>log()</code> method that receives the structured log message, a <code>reset()</code> method for cleanup, and the <code>levelName</code> and <code>levelNumber</code> properties for filtering.</p>
-            <pre><code class="language-typescript">import { LogAdapterInterface } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { LogAdapterInterface } from '@xhubio/bitdiver-runner'
 
 class LogAdapterCustom implements LogAdapterInterface {
   levelName: string

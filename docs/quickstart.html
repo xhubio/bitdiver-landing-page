@@ -91,11 +91,11 @@
 
             <h2>Installation</h2>
             <p>Install the runner package from npm. It includes the core model, definition types, and log adapters as transitive dependencies.</p>
-            <pre><code class="language-bash">npm install @bitdiver/runner</code></pre>
+            <pre><code class="language-bash">npm install @xhubio/bitdiver-runner</code></pre>
 
             <h2>Your First Step</h2>
             <p>Steps are the basic execution units in BitDiver. A <code>StepNormal</code> runs once per test case in the suite. Create a file called <code>HelloStep.ts</code>:</p>
-            <pre><code class="language-typescript">import { StepNormal } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { StepNormal } from '@xhubio/bitdiver-runner'
 
 class HelloStep extends StepNormal {
   async run() {
@@ -108,7 +108,7 @@ class HelloStep extends StepNormal {
 
             <h2>Register Steps</h2>
             <p>Before the runner can use your steps, you need to register them in a <code>StepRegistry</code>. The registry maps step class names to their implementations:</p>
-            <pre><code class="language-typescript">import { StepRegistry } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { StepRegistry } from '@xhubio/bitdiver-runner'
 
 const registry = new StepRegistry()
 registry.registerStep({ stepName: 'hello', step: HelloStep })</code></pre>
@@ -135,7 +135,7 @@ registry.registerStep({ stepName: 'hello', step: HelloStep })</code></pre>
 
             <h2>Run the Suite</h2>
             <p>Now wire everything together. Create a <code>run.ts</code> file that loads the suite definition, configures a log adapter, and starts the runner:</p>
-            <pre><code class="language-typescript">import { Runner, LogAdapterConsole } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { Runner, LogAdapterConsole } from '@xhubio/bitdiver-runner'
 
 const runner = new Runner({
   id: 'run-001',

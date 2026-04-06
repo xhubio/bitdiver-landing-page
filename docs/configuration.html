@@ -102,7 +102,7 @@
             <h2>Defining a Schema</h2>
             <p>Define your configuration shape as a Zod object. Every field gets full type inference automatically. Use <code>.default()</code> for optional values and leave required fields without a default so that validation catches missing configuration early.</p>
             <pre><code class="language-typescript">import { z } from 'zod'
-import { loadConfig } from '@bitdiver/runner'
+import { loadConfig } from '@xhubio/bitdiver-runner'
 
 const schema = z.object({
   database: z.object({
@@ -159,7 +159,7 @@ console.log(result.toString())
 
             <h2>Using Config in Steps (StepSetupConfig)</h2>
             <p>In a real test suite you typically load configuration during the setup phase so it is available to all subsequent steps. <code>StepSetupConfig</code> is a built-in step that loads configuration into <code>EnvironmentRun</code>, making it accessible from any step via <code>this.environment</code>.</p>
-            <pre><code class="language-typescript">import { StepSetupConfig } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { StepSetupConfig } from '@xhubio/bitdiver-runner'
 
 class SetupConfig extends StepSetupConfig {
   schema = myConfigSchema

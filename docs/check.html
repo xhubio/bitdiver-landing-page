@@ -128,7 +128,7 @@
 
             <h2>Custom Checks</h2>
             <p>For specialized validation logic you can extend <code>StepCheck</code> and override its comparison behavior, or use the <code>runCheck</code> function directly for programmatic access to the comparison engine.</p>
-            <pre><code class="language-typescript">import { StepCheck } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { StepCheck } from '@xhubio/bitdiver-runner'
 
 class CustomCheck extends StepCheck {
   async run() {
@@ -143,7 +143,7 @@ class CustomCheck extends StepCheck {
   }
 }</code></pre>
             <p>Alternatively, call <code>runCheck</code> directly when you need comparison results without the step lifecycle:</p>
-            <pre><code class="language-typescript">import { runCheck } from '@bitdiver/runner'
+            <pre><code class="language-typescript">import { runCheck } from '@xhubio/bitdiver-runner'
 
 const result = await runCheck({
   actualDir: './actual',
