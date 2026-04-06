@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Execution · BitDiver</title>
+  <meta name="description" content="BitDiver execution modes, parallel execution, progress reporting, and suite builder" />
+  <link rel="shortcut icon" href="/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/brutalist.css" />
+  <link rel="stylesheet" href="/css/docs.css" />
+</head>
+<body data-theme="tactical">
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo">
+        <img src="/img/logo.png" alt="BitDiver" width="40" height="40" />
+        <span class="site-name">BitDiver</span>
+      </a>
+      <div class="header-right">
+        <nav class="site-nav">
+          <ul>
+            <li><a href="/docs/quickstart.html">[ DOCS ]</a></li>
+            <li><a href="/docs/api.html">[ API ]</a></li>
+            <li><a href="https://github.com/bitdiver/runner">[ GITHUB ]</a></li>
+          </ul>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <span class="theme-toggle-label-dark">CRT</span>
+          <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+          <span class="theme-toggle-label-light">INK</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docMainWrapper wrapper">
+    <!-- SIDEBAR -->
+    <div class="docsNavContainer" id="docsNav">
+      <nav class="toc">
+        <div class="toggleNav">
+          <section class="navWrapper wrapper">
+            <div class="navBreadcrumb">
+              <button id="navToggler" onclick="document.querySelector('.navGroups').classList.toggle('docsSliderActive')">Menu</button>
+              <samp>Documentation</samp>
+            </div>
+            <div class="navGroups">
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Getting Started</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/quickstart.html">Quickstart</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/concepts.html">Core Concepts</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Guides</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/configuration.html">Configuration</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/step-types.html">Step Types</a></li>
+                  <li class="navListItem navListItemActive"><a class="navItem" href="/docs/execution.html">Execution</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/check.html">Check &amp; Results</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/logging.html">Logging</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Reference</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/api.html">API Reference</a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </nav>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container mainContainer docsContainer">
+      <div class="wrapper">
+        <div class="post">
+          <header class="postHeader">
+            <h1 class="postHeaderTitle">Execution</h1>
+          </header>
+          <article>
+
+            <h2>Runner</h2>
+            <p>The Runner orchestrates suite execution. Its constructor takes a <code>RunnerOptions</code> object with properties for the run ID, data directory, suite definition, step registry, log adapter, and more. Once configured, call <code>run()</code> to start execution.</p>
+            <pre><code class="language-typescript">const runner = new Runner({
+  id: 'run-001',
+  dataDirectory: './test-data',
+  suite: suiteDefinition,
+  stepRegistry: registry,
+  logAdapter: new LogAdapterConsole({ levelName: 'info' }),
+  maxParallelSteps: 20,
+  parallelExecution: true,
+  testMode: false
+})
+await runner.run()</code></pre>
+
+            <h2>Execution Modes</h2>
+            <p>BitDiver supports two execution modes that determine how steps and testcases are iterated.</p>
+
+            <h3>Batch Mode (default)</h3>
+            <p>In batch mode the runner iterates steps first, then testcases per step. All testcases execute step 1 (in parallel), then all testcases execute step 2, and so on. This is the default mode and is best suited for parallel execution because all testcases at a given step level can run concurrently without inter-step dependencies.</p>
+
+            <h3>Normal Mode</h3>
+            <p>In normal mode the runner iterates testcases first, then steps within each testcase. Testcase 1 runs all of its steps sequentially, then testcase 2 runs all of its steps, and so on. This mode is useful when a testcase&rsquo;s steps have sequential dependencies on each other.</p>
+
+            <p>Set the execution mode via the <code>executionMode</code> property on the runner or in the suite definition.</p>
+
+            <h2>Parallel Execution</h2>
+            <p>The default concurrency limit is 20 testcases running in parallel. You can configure this globally via the <code>maxParallelSteps</code> option in <code>RunnerOptions</code>. Individual steps can also override the global limit by setting their own <code>maxParallelSteps</code> property, which is useful when a particular step interacts with a resource that has its own concurrency constraints.</p>
+            <p>Under the hood, the custom <code>pAll()</code> function manages concurrent promise execution, ensuring that no more than the configured number of testcases are processed simultaneously for a given step.</p>
+
+            <h2>Progress Reporting</h2>
+            <p>BitDiver includes built-in progress meters that display execution progress in the console. The available implementations are:</p>
+            <ul>
+              <li><strong><code>ProgressBarConsoleBatch</code></strong> &mdash; Simple console progress bar showing step and testcase completion.</li>
+              <li><strong><code>ProgressBarConsoleLogBatch</code></strong> &mdash; Console progress bar combined with inline log output.</li>
+              <li><strong><code>ProgressBarConsoleLogBatchJson</code></strong> &mdash; JSON-formatted progress output, ideal for machine-readable CI pipelines.</li>
+            </ul>
+            <p>Assign a progress bar instance to the runner before calling <code>run()</code> to enable progress reporting during execution.</p>
+
+            <h2>Suite Builder</h2>
+            <p>For declarative suite creation from YAML or JSON configuration files, use <code>createSuiteFromConfig</code>. The configuration divides a suite into three phases:</p>
+            <ul>
+              <li><strong>setup</strong> &mdash; Steps that run sequentially at the beginning (e.g., environment initialization, database clearing).</li>
+              <li><strong>timed</strong> &mdash; Steps that are auto-scanned from testcase data and run during the main execution phase.</li>
+              <li><strong>teardown</strong> &mdash; Steps that run sequentially at the end (e.g., result export, validation).</li>
+            </ul>
+            <pre><code class="language-yaml">suiteTypes:
+  TEST_FIX:
+    setup: [SetupEnv, ClearDB]
+    timed: auto
+    teardown: [ExportResults, CheckResults]
+timedStepMapping:
+  kafka: SendKafkaTime
+  http: SendHttpTime</code></pre>
+            <p>When <code>timed</code> is set to <code>auto</code>, the suite builder scans each testcase&rsquo;s data for keys that match entries in <code>timedStepMapping</code> and automatically includes the corresponding step classes. This keeps the configuration concise while allowing testcase data to drive which timed steps are included.</p>
+
+            <h2>Test Mode</h2>
+            <p>When <code>testMode: true</code> is set in the runner options, <code>StepTimed</code> instances skip their configured delays. This is useful for dry-runs and CI environments where you want to validate the full execution flow without waiting for real timing intervals. All other step behavior remains unchanged, so test mode gives you a fast, faithful representation of the suite&rsquo;s execution path.</p>
+
+          </article>
+        </div>
+        <div class="docs-prevnext">
+          <a class="docs-prev" href="/docs/step-types.html">&larr; Step Types</a>
+          <a class="docs-next" href="/docs/check.html">Check &amp; Results &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <a href="/"><img src="/img/logo.png" alt="BitDiver" width="50" height="50" /></a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ DOCS ]</samp>
+        <a href="/docs/quickstart.html">Quickstart</a>
+        <a href="/docs/concepts.html">Guide</a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ MORE ]</samp>
+        <a href="https://github.com/bitdiver/runner">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <samp>&copy; 2019-2026 BITDIVER.XHUB.IO</samp>
+    </div>
+  </footer>
+
+  <script src="/js/theme.js"></script>
+</body>
+</html>

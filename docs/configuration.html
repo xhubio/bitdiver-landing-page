@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration · BitDiver</title>
+  <meta name="description" content="BitDiver configuration system with Zod schemas and multi-source loading" />
+  <link rel="shortcut icon" href="/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/brutalist.css" />
+  <link rel="stylesheet" href="/css/docs.css" />
+</head>
+<body data-theme="tactical">
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo">
+        <img src="/img/logo.png" alt="BitDiver" width="40" height="40" />
+        <span class="site-name">BitDiver</span>
+      </a>
+      <div class="header-right">
+        <nav class="site-nav">
+          <ul>
+            <li><a href="/docs/quickstart.html">[ DOCS ]</a></li>
+            <li><a href="/docs/api.html">[ API ]</a></li>
+            <li><a href="https://github.com/bitdiver/runner">[ GITHUB ]</a></li>
+          </ul>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <span class="theme-toggle-label-dark">CRT</span>
+          <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+          <span class="theme-toggle-label-light">INK</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docMainWrapper wrapper">
+    <!-- SIDEBAR -->
+    <div class="docsNavContainer" id="docsNav">
+      <nav class="toc">
+        <div class="toggleNav">
+          <section class="navWrapper wrapper">
+            <div class="navBreadcrumb">
+              <button id="navToggler" onclick="document.querySelector('.navGroups').classList.toggle('docsSliderActive')">Menu</button>
+              <samp>Documentation</samp>
+            </div>
+            <div class="navGroups">
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Getting Started</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/quickstart.html">Quickstart</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/concepts.html">Core Concepts</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Guides</h3>
+                <ul>
+                  <li class="navListItem navListItemActive"><a class="navItem" href="/docs/configuration.html">Configuration</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/step-types.html">Step Types</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/execution.html">Execution</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/check.html">Check &amp; Results</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/logging.html">Logging</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Reference</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/api.html">API Reference</a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </nav>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container mainContainer docsContainer">
+      <div class="wrapper">
+        <div class="post">
+          <header class="postHeader">
+            <h1 class="postHeaderTitle">Configuration System</h1>
+          </header>
+          <article>
+
+            <h2>Overview</h2>
+            <p>BitDiver uses <a href="https://zod.dev">Zod</a> schemas for configuration with full TypeScript type inference. The <code>loadConfig()</code> function loads and validates configuration from multiple sources, merging them according to a well-defined priority order. This means you can define sensible defaults in your schema, override them with a config file, pass one-off values programmatically, and let environment variables take final precedence&mdash;all with end-to-end type safety.</p>
+
+            <h2>Priority System</h2>
+            <p>When the same key is defined in multiple sources, the highest-priority source wins. From highest to lowest:</p>
+            <ol>
+              <li><strong>Environment variables</strong> &mdash; Always win. Ideal for CI/CD and per-machine overrides.</li>
+              <li><strong>Inline values</strong> &mdash; Passed programmatically via the <code>values</code> option. Useful for runtime overrides.</li>
+              <li><strong>JSON config file</strong> &mdash; Loaded from disk via the <code>file</code> option. Good for project-level defaults.</li>
+              <li><strong>Schema defaults</strong> &mdash; Defined in the Zod schema via <code>.default()</code>. The fallback when nothing else is set.</li>
+            </ol>
+
+            <h2>Defining a Schema</h2>
+            <p>Define your configuration shape as a Zod object. Every field gets full type inference automatically. Use <code>.default()</code> for optional values and leave required fields without a default so that validation catches missing configuration early.</p>
+            <pre><code class="language-typescript">import { z } from 'zod'
+import { loadConfig } from '@bitdiver/runner'
+
+const schema = z.object({
+  database: z.object({
+    host: z.string().default('localhost'),
+    port: z.number().default(5432),
+    name: z.string()
+  }),
+  timeout: z.number().default(30000),
+  apiKey: z.string()
+})</code></pre>
+            <p>In this example <code>database.host</code>, <code>database.port</code>, and <code>timeout</code> have defaults, while <code>database.name</code> and <code>apiKey</code> are required&mdash;loading will fail if they are not provided by at least one source.</p>
+
+            <h2>Loading Configuration</h2>
+            <p>Call <code>loadConfig()</code> with your schema and the sources you want to merge. The returned <code>result.config</code> object is fully typed according to your schema.</p>
+            <pre><code class="language-typescript">const result = await loadConfig({
+  schema,
+  file: './config.json',
+  values: { timeout: 60000 },
+  envPrefix: 'MYAPP',
+  secrets: ['apiKey', 'database.password']
+})
+
+const config = result.config
+// config.database.host &rarr; typed as string
+// config.timeout &rarr; 60000 (inline value wins over file/default)</code></pre>
+
+            <h2>Environment Variables</h2>
+            <p>Environment variables are mapped to configuration paths using a simple naming convention. The <code>envPrefix</code> you provide is prepended, and the nested path is converted to <code>UPPER_SNAKE_CASE</code>:</p>
+            <pre><code class="language-text">ENVPREFIX_PATH_IN_UPPER_SNAKE
+
+Examples (envPrefix: 'MYAPP'):
+  database.host     &rarr;  MYAPP_DATABASE_HOST
+  database.port     &rarr;  MYAPP_DATABASE_PORT
+  apiKey            &rarr;  MYAPP_API_KEY
+  timeout           &rarr;  MYAPP_TIMEOUT</code></pre>
+            <p>Because environment variables always have the highest priority, setting <code>MYAPP_DATABASE_HOST=prod-db.example.com</code> will override any value from the config file, inline values, or schema defaults.</p>
+
+            <h2>Secret Masking</h2>
+            <p>Fields listed in the <code>secrets</code> array are masked when you call <code>result.toString()</code>. This lets you safely log the resolved configuration without exposing sensitive values like API keys or passwords.</p>
+            <pre><code class="language-typescript">const result = await loadConfig({
+  schema,
+  file: './config.json',
+  envPrefix: 'MYAPP',
+  secrets: ['apiKey', 'database.password']
+})
+
+console.log(result.toString())
+// database.host: localhost
+// database.port: 5432
+// database.name: mydb
+// apiKey: ******
+// database.password: ******</code></pre>
+            <p>The actual values are still available on <code>result.config</code>&mdash;only the string representation is masked.</p>
+
+            <h2>Using Config in Steps (StepSetupConfig)</h2>
+            <p>In a real test suite you typically load configuration during the setup phase so it is available to all subsequent steps. <code>StepSetupConfig</code> is a built-in step that loads configuration into <code>EnvironmentRun</code>, making it accessible from any step via <code>this.environment</code>.</p>
+            <pre><code class="language-typescript">import { StepSetupConfig } from '@bitdiver/runner'
+
+class SetupConfig extends StepSetupConfig {
+  schema = myConfigSchema
+  configFile = './config.json'
+  envPrefix = 'MYAPP'
+  secrets = ['apiKey']
+}</code></pre>
+            <p>Register this step and place it first in your suite&rsquo;s step array. When the runner executes it, the validated configuration object is stored on the run environment and can be retrieved by any step that follows.</p>
+
+          </article>
+        </div>
+        <div class="docs-prevnext">
+          <a class="docs-prev" href="/docs/concepts.html">&larr; Core Concepts</a>
+          <a class="docs-next" href="/docs/step-types.html">Step Types &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <a href="/"><img src="/img/logo.png" alt="BitDiver" width="50" height="50" /></a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ DOCS ]</samp>
+        <a href="/docs/quickstart.html">Quickstart</a>
+        <a href="/docs/concepts.html">Guide</a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ MORE ]</samp>
+        <a href="https://github.com/bitdiver/runner">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <samp>&copy; 2019-2026 BITDIVER.XHUB.IO</samp>
+    </div>
+  </footer>
+
+  <script src="/js/theme.js"></script>
+</body>
+</html>

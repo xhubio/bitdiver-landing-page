@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart · BitDiver</title>
+  <meta name="description" content="Get started with BitDiver in 5 minutes" />
+  <link rel="shortcut icon" href="/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/brutalist.css" />
+  <link rel="stylesheet" href="/css/docs.css" />
+</head>
+<body data-theme="tactical">
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo">
+        <img src="/img/logo.png" alt="BitDiver" width="40" height="40" />
+        <span class="site-name">BitDiver</span>
+      </a>
+      <div class="header-right">
+        <nav class="site-nav">
+          <ul>
+            <li><a href="/docs/quickstart.html">[ DOCS ]</a></li>
+            <li><a href="/docs/api.html">[ API ]</a></li>
+            <li><a href="https://github.com/bitdiver/runner">[ GITHUB ]</a></li>
+          </ul>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <span class="theme-toggle-label-dark">CRT</span>
+          <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+          <span class="theme-toggle-label-light">INK</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docMainWrapper wrapper">
+    <!-- SIDEBAR -->
+    <div class="docsNavContainer" id="docsNav">
+      <nav class="toc">
+        <div class="toggleNav">
+          <section class="navWrapper wrapper">
+            <div class="navBreadcrumb">
+              <button id="navToggler" onclick="document.querySelector('.navGroups').classList.toggle('docsSliderActive')">Menu</button>
+              <samp>Documentation</samp>
+            </div>
+            <div class="navGroups">
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Getting Started</h3>
+                <ul>
+                  <li class="navListItem navListItemActive"><a class="navItem" href="/docs/quickstart.html">Quickstart</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/concepts.html">Core Concepts</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Guides</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/configuration.html">Configuration</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/step-types.html">Step Types</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/execution.html">Execution</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/check.html">Check &amp; Results</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/logging.html">Logging</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Reference</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/api.html">API Reference</a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </nav>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container mainContainer docsContainer">
+      <div class="wrapper">
+        <div class="post">
+          <header class="postHeader">
+            <h1 class="postHeaderTitle">Quickstart</h1>
+          </header>
+          <article>
+
+            <p>Get up and running with BitDiver in 5 minutes. This guide walks you through installing the framework, writing your first step, and executing a test suite.</p>
+
+            <h2>Installation</h2>
+            <p>Install the runner package from npm. It includes the core model, definition types, and log adapters as transitive dependencies.</p>
+            <pre><code class="language-bash">npm install @bitdiver/runner</code></pre>
+
+            <h2>Your First Step</h2>
+            <p>Steps are the basic execution units in BitDiver. A <code>StepNormal</code> runs once per test case in the suite. Create a file called <code>HelloStep.ts</code>:</p>
+            <pre><code class="language-typescript">import { StepNormal } from '@bitdiver/runner'
+
+class HelloStep extends StepNormal {
+  async run() {
+    await this.logInfo('Hello from BitDiver!')
+    const name = this.tc.name
+    await this.logInfo(`Running testcase: ${name}`)
+  }
+}</code></pre>
+            <p>The <code>run()</code> method is the heart of a step. It is called during the step lifecycle after <code>start()</code> and <code>beforeRun()</code>. You have access to the current test case context via <code>this.tc</code> and shared run-level state via <code>this.environment</code>.</p>
+
+            <h2>Register Steps</h2>
+            <p>Before the runner can use your steps, you need to register them in a <code>StepRegistry</code>. The registry maps step class names to their implementations:</p>
+            <pre><code class="language-typescript">import { StepRegistry } from '@bitdiver/runner'
+
+const registry = new StepRegistry()
+registry.registerStep({ stepName: 'hello', step: HelloStep })</code></pre>
+            <p>You can register as many steps as you need. Each step name must be unique within the registry.</p>
+
+            <h2>Define a Suite</h2>
+            <p>A suite definition is a JSON object that describes which steps to run and which test cases to execute. Create a file called <code>suite.json</code>:</p>
+            <pre><code class="language-json">{
+  "name": "my-first-suite",
+  "steps": ["hello"],
+  "stepDefinitions": {
+    "hello": {
+      "name": "hello",
+      "class": "hello",
+      "type": "normal"
+    }
+  },
+  "testcases": [
+    { "name": "TC-001", "data": {} },
+    { "name": "TC-002", "data": {} }
+  ]
+}</code></pre>
+            <p>The <code>steps</code> array controls the execution order. Each entry in <code>stepDefinitions</code> maps a step name to its class (as registered in the StepRegistry) and its type (<code>normal</code> or <code>single</code>). The <code>testcases</code> array defines the individual test cases that every normal step will iterate over.</p>
+
+            <h2>Run the Suite</h2>
+            <p>Now wire everything together. Create a <code>run.ts</code> file that loads the suite definition, configures a log adapter, and starts the runner:</p>
+            <pre><code class="language-typescript">import { Runner, LogAdapterConsole } from '@bitdiver/runner'
+
+const runner = new Runner({
+  id: 'run-001',
+  dataDirectory: './data',
+  suite: suiteDefinition,
+  stepRegistry: registry,
+  logAdapter: new LogAdapterConsole({ levelName: 'info' })
+})
+
+await runner.run()</code></pre>
+            <p>The runner will process each step in order, executing normal steps once per test case and single steps once per suite. Progress and log output are routed through the configured log adapter.</p>
+
+            <h2>Next Steps</h2>
+            <p>Now that you have a working suite, dive deeper into the framework:</p>
+            <ul>
+              <li><a href="/docs/concepts.html"><strong>Core Concepts</strong></a> &mdash; Understand the execution model, environments, and the step lifecycle.</li>
+              <li><a href="/docs/configuration.html"><strong>Configuration</strong></a> &mdash; Learn about all available runner options and environment setup.</li>
+              <li><a href="/docs/step-types.html"><strong>Step Types</strong></a> &mdash; Explore the differences between normal steps, single steps, and how to choose the right one.</li>
+            </ul>
+
+          </article>
+        </div>
+        <div class="docs-prevnext">
+          <span></span>
+          <a class="docs-next" href="/docs/concepts.html">Core Concepts &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <a href="/"><img src="/img/logo.png" alt="BitDiver" width="50" height="50" /></a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ DOCS ]</samp>
+        <a href="/docs/quickstart.html">Quickstart</a>
+        <a href="/docs/concepts.html">Guide</a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ MORE ]</samp>
+        <a href="https://github.com/bitdiver/runner">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <samp>&copy; 2019-2026 BITDIVER.XHUB.IO</samp>
+    </div>
+  </footer>
+
+  <script src="/js/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference · BitDiver</title>
+  <meta name="description" content="BitDiver API reference documentation" />
+  <link rel="shortcut icon" href="/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/brutalist.css" />
+  <link rel="stylesheet" href="/css/docs.css" />
+</head>
+<body data-theme="tactical">
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo">
+        <img src="/img/logo.png" alt="BitDiver" width="40" height="40" />
+        <span class="site-name">BitDiver</span>
+      </a>
+      <div class="header-right">
+        <nav class="site-nav">
+          <ul>
+            <li><a href="/docs/quickstart.html">[ DOCS ]</a></li>
+            <li><a href="/docs/api.html">[ API ]</a></li>
+            <li><a href="https://github.com/bitdiver/runner">[ GITHUB ]</a></li>
+          </ul>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <span class="theme-toggle-label-dark">CRT</span>
+          <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+          <span class="theme-toggle-label-light">INK</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docMainWrapper wrapper">
+    <div class="docsNavContainer" id="docsNav">
+      <nav class="toc">
+        <div class="toggleNav">
+          <section class="navWrapper wrapper">
+            <div class="navBreadcrumb">
+              <button id="navToggler" onclick="document.querySelector('.navGroups').classList.toggle('docsSliderActive')">Menu</button>
+              <samp>Documentation</samp>
+            </div>
+            <div class="navGroups">
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Getting Started</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/quickstart.html">Quickstart</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/concepts.html">Core Concepts</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Guides</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/configuration.html">Configuration</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/step-types.html">Step Types</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/execution.html">Execution</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/check.html">Check &amp; Results</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/logging.html">Logging</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Reference</h3>
+                <ul>
+                  <li class="navListItem navListItemActive"><a class="navItem" href="/docs/api.html">API Reference</a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container mainContainer docsContainer">
+      <div class="wrapper">
+        <div class="post">
+          <header class="postHeader">
+            <h1 class="postHeaderTitle">API Reference</h1>
+          </header>
+          <article>
+            <blockquote>
+              <p>The full TypeDoc API reference will be generated from the source code in a future update.</p>
+            </blockquote>
+
+            <h2>Package Exports</h2>
+            <p>All public APIs are exported from the main package entry point:</p>
+            <pre><code>import {
+  // Config
+  loadConfig,
+
+  // Suite Builder
+  createSuiteFromConfig,
+
+  // Model — Steps
+  StepBase,
+  StepNormal,
+  StepSingle,
+  StepTimed,
+  StepSetupConfig,
+  StepRegistry,
+
+  // Model — Environments
+  EnvironmentRun,
+  EnvironmentTestcase,
+
+  // Runner
+  Runner,
+
+  // Check
+  StepCheck,
+
+  // Log Adapters
+  LogAdapterConsole,
+  LogAdapterConsoleJson,
+  LogAdapterFile,
+  LogAdapterMemory,
+
+  // Constants
+  STATUS_OK,
+  STATUS_WARNING,
+  STATUS_ERROR,
+  STATUS_FATAL
+} from '@bitdiver/runner'</code></pre>
+
+            <h2>Quick Reference</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Export</th>
+                  <th>Module</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><code>loadConfig()</code></td><td>Config</td><td>Load and validate configuration from file + env vars + inline values</td></tr>
+                <tr><td><code>createSuiteFromConfig()</code></td><td>Suite Builder</td><td>Create suite definition from YAML/JSON config</td></tr>
+                <tr><td><code>StepNormal</code></td><td>Model</td><td>Base class for per-testcase steps</td></tr>
+                <tr><td><code>StepSingle</code></td><td>Model</td><td>Base class for once-per-suite steps</td></tr>
+                <tr><td><code>StepTimed</code></td><td>Model</td><td>Base class for time-delayed steps</td></tr>
+                <tr><td><code>StepSetupConfig</code></td><td>Model</td><td>Generic config-loading step</td></tr>
+                <tr><td><code>StepRegistry</code></td><td>Model</td><td>Registry mapping names to step classes</td></tr>
+                <tr><td><code>EnvironmentRun</code></td><td>Model</td><td>Run-wide shared state</td></tr>
+                <tr><td><code>EnvironmentTestcase</code></td><td>Model</td><td>Per-testcase state</td></tr>
+                <tr><td><code>Runner</code></td><td>Runner Server</td><td>Suite execution engine</td></tr>
+                <tr><td><code>StepCheck</code></td><td>Check</td><td>Result comparison step</td></tr>
+                <tr><td><code>LogAdapterConsole</code></td><td>Log Adapter</td><td>Colored console output</td></tr>
+                <tr><td><code>LogAdapterConsoleJson</code></td><td>Log Adapter</td><td>JSON console output</td></tr>
+                <tr><td><code>LogAdapterFile</code></td><td>Log Adapter</td><td>File-based logging</td></tr>
+                <tr><td><code>LogAdapterMemory</code></td><td>Log Adapter</td><td>In-memory logging (testing)</td></tr>
+              </tbody>
+            </table>
+
+            <h2>Detailed Documentation</h2>
+            <p>For detailed usage of each API, see the guide pages:</p>
+            <ul>
+              <li><a href="/docs/configuration.html">Configuration</a> — loadConfig(), StepSetupConfig</li>
+              <li><a href="/docs/step-types.html">Step Types</a> — StepNormal, StepSingle, StepTimed</li>
+              <li><a href="/docs/execution.html">Execution</a> — Runner, Suite Builder, Progress</li>
+              <li><a href="/docs/check.html">Check &amp; Results</a> — StepCheck, Comparison</li>
+              <li><a href="/docs/logging.html">Logging</a> — Log Adapters, Log Levels</li>
+            </ul>
+          </article>
+        </div>
+        <div class="docs-prevnext">
+          <a class="docs-prev" href="/docs/logging.html">&larr; Logging</a>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <a href="/"><img src="/img/logo.png" alt="BitDiver" width="50" height="50" /></a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ DOCS ]</samp>
+        <a href="/docs/quickstart.html">Quickstart</a>
+        <a href="/docs/concepts.html">Guide</a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ MORE ]</samp>
+        <a href="https://github.com/bitdiver/runner">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <samp>&copy; 2019-2026 BITDIVER.XHUB.IO</samp>
+    </div>
+  </footer>
+
+  <script src="/js/theme.js"></script>
+</body>
+</html>

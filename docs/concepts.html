@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Concepts · BitDiver</title>
+  <meta name="description" content="Understand BitDiver's architecture, step lifecycle, environments, suite definitions, and persistence model." />
+  <link rel="shortcut icon" href="/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/brutalist.css" />
+  <link rel="stylesheet" href="/css/docs.css" />
+</head>
+<body data-theme="tactical">
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo">
+        <img src="/img/logo.png" alt="BitDiver" width="40" height="40" />
+        <span class="site-name">BitDiver</span>
+      </a>
+      <div class="header-right">
+        <nav class="site-nav">
+          <ul>
+            <li><a href="/docs/quickstart.html">[ DOCS ]</a></li>
+            <li><a href="/docs/api.html">[ API ]</a></li>
+            <li><a href="https://github.com/bitdiver/runner">[ GITHUB ]</a></li>
+          </ul>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <span class="theme-toggle-label-dark">CRT</span>
+          <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+          <span class="theme-toggle-label-light">INK</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docMainWrapper wrapper">
+    <!-- SIDEBAR -->
+    <div class="docsNavContainer" id="docsNav">
+      <nav class="toc">
+        <div class="toggleNav">
+          <section class="navWrapper wrapper">
+            <div class="navBreadcrumb">
+              <button id="navToggler" onclick="document.querySelector('.navGroups').classList.toggle('docsSliderActive')">Menu</button>
+              <samp>Documentation</samp>
+            </div>
+            <div class="navGroups">
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Getting Started</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/quickstart.html">Quickstart</a></li>
+                  <li class="navListItem navListItemActive"><a class="navItem" href="/docs/concepts.html">Core Concepts</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Guides</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/configuration.html">Configuration</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/step-types.html">Step Types</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/execution.html">Execution</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/check.html">Check &amp; Results</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/logging.html">Logging</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Reference</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/api.html">API Reference</a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </nav>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container mainContainer docsContainer">
+      <div class="wrapper">
+        <div class="post">
+          <header class="postHeader">
+            <h1 class="postHeaderTitle">Core Concepts</h1>
+          </header>
+          <article>
+
+            <p>This page explains the foundational concepts behind BitDiver: how its modules fit together, how steps execute, and how data flows through a test run.</p>
+
+            <h2>Architecture Overview</h2>
+            <p>BitDiver is a single TypeScript package (<code>@bitdiver/runner</code>) composed of 7 modules that form a pipeline:</p>
+            <ul>
+              <li><strong>Config</strong> &mdash; Loads and validates configuration using Zod schemas. Supports environment variable overrides, inline values, file-based defaults, and automatic secret masking.</li>
+              <li><strong>Suite Builder</strong> &mdash; Reads YAML or JSON configuration files and constructs a suite definition. Handles timed file scanning and step generation from filename prefixes.</li>
+              <li><strong>Definition</strong> &mdash; TypeScript interfaces that describe the serialized structure of suites, test cases, and steps. Provides JSON schema validation for suite definitions.</li>
+              <li><strong>Model</strong> &mdash; Core execution model containing step classes (Normal, Single, Timed), environments (Run and Testcase), and the StepRegistry.</li>
+              <li><strong>Runner Server</strong> &mdash; The execution engine. Sorts steps by dependency, manages parallel execution, reports progress, and orchestrates the full lifecycle.</li>
+              <li><strong>Check</strong> &mdash; Automatic result comparison using deep object diffing. Supports directives for Time, Number, Regex, and Contains matching. Generates summary and detail reports.</li>
+              <li><strong>Log Adapter</strong> &mdash; Pluggable logging with Console, ConsoleJson, File, and Memory adapters. Provides structured log messages with metadata and source tracking.</li>
+            </ul>
+            <p>These modules work together as a pipeline: <strong>Config</strong> feeds validated settings into the <strong>Suite Builder</strong>, which produces a <strong>Suite Definition</strong>. The <strong>Runner Server</strong> takes that definition and executes it using the <strong>Model</strong> classes. During execution, the <strong>Check</strong> module compares actual results against expected values, and the <strong>Log Adapter</strong> captures everything that happens along the way.</p>
+
+            <h2>Steps</h2>
+            <p>Steps are the basic execution units in BitDiver. Every piece of test logic lives inside a step. Steps follow a defined lifecycle:</p>
+            <pre><code>start() &rarr; beforeRun() &rarr; run() &rarr; afterRun() &rarr; end()</code></pre>
+            <p>The <code>start()</code> and <code>end()</code> methods run once per step instance &mdash; they are called at the beginning and end of the step's execution regardless of how many test cases exist. The <code>beforeRun()</code>, <code>run()</code>, and <code>afterRun()</code> methods run once per instance: for a StepNormal, that means once per test case; for a StepSingle, once for the entire suite.</p>
+
+            <h3>StepNormal</h3>
+            <p>Runs once per test case in the suite. Access the current test case context via the typed <code>this.tc</code> getter. Use this for data-driven operations like sending HTTP requests, interacting with UIs, or validating individual responses.</p>
+
+            <h3>StepSingle</h3>
+            <p>Runs once for the entire suite, regardless of how many test cases exist. Access all test cases via the typed <code>this.testcases</code> getter. Use this for shared setup and teardown operations like initializing a database, starting a server, or cleaning up after all tests complete.</p>
+
+            <h3>StepTimed</h3>
+            <p>Behaves like a StepNormal but waits until a configured time offset has elapsed before executing. This is useful for simulating real-world timing in integration tests &mdash; for example, triggering an action 30 seconds after a previous step to test timeout behavior or delayed processing.</p>
+
+            <h2>Environments</h2>
+            <p>BitDiver provides two environment types that act as data stores during a test run:</p>
+
+            <h3>EnvironmentRun</h3>
+            <p>Shared across the entire run. Every step in every test case has access to the same EnvironmentRun instance. It stores global configuration and shared state via its <code>map</code> property (a <code>Map</code>). Use it to share data between steps that need to coordinate &mdash; for example, storing an API token obtained during login so that subsequent steps can use it.</p>
+
+            <h3>EnvironmentTestcase</h3>
+            <p>Scoped to a single test case. Each test case gets its own EnvironmentTestcase instance with a name, a status, and a <code>map</code> for storing data. Steps running within the same test case share the same EnvironmentTestcase, allowing them to pass data forward (e.g., a request step stores the response, and a validation step reads it).</p>
+            <p>Status tracking follows a one-way escalation model &mdash; the status can only go up, never down:</p>
+            <pre><code>OK &rarr; WARNING &rarr; ERROR &rarr; FATAL</code></pre>
+            <p>If a step sets the status to <code>ERROR</code>, a later step cannot reset it to <code>OK</code>. This ensures that the final status always reflects the worst outcome encountered during the run.</p>
+
+            <h2>Suite Definition</h2>
+            <p>A suite definition is a data structure (typically loaded from YAML or JSON) that tells the runner which steps to execute and with which data. It has three key parts:</p>
+
+            <h3>steps</h3>
+            <p>An ordered list of step names. This determines the execution sequence &mdash; the runner processes steps in the order they appear in this array.</p>
+
+            <h3>stepDefinitions</h3>
+            <p>A map from step names to their configuration. Each entry specifies the step class (as registered in the StepRegistry) and the step type (<code>normal</code>, <code>single</code>, or <code>timed</code>).</p>
+
+            <h3>testcases</h3>
+            <p>An array of test case objects, each with a name and a sparse data map. The data map uses <strong>sparse storage</strong>: instead of including null entries for steps that have no data, only steps with actual data are present in the map. This keeps suite definitions compact, especially when many steps do not require per-testcase input.</p>
+            <p>For example, if a suite has 10 steps but a particular test case only provides data for steps 2 and 7, the data object will only contain keys for those two steps. The runner handles the absence of data gracefully &mdash; steps without data simply receive no input.</p>
+
+            <h2>StepRegistry</h2>
+            <p>The StepRegistry maps step names to their class implementations. Before the runner can execute a suite, every step name referenced in the suite definition must have a corresponding class registered in the StepRegistry.</p>
+            <pre><code class="language-typescript">import { StepRegistry } from '@bitdiver/runner'
+
+const registry = new StepRegistry()
+registry.registerStep({ stepName: 'login', step: LoginStep })
+registry.registerStep({ stepName: 'fetchData', step: FetchDataStep })
+registry.registerStep({ stepName: 'validate', step: ValidateStep })</code></pre>
+            <p>The name used during registration must exactly match the name used in the suite definition's <code>stepDefinitions</code> and <code>steps</code> arrays. If the runner encounters a step name that is not in the registry, it will throw an error before execution begins.</p>
+
+            <h2>Persistence</h2>
+            <p>Steps can persist data to and from disk, which is useful for sharing state between separate test runs or for debugging. BitDiver provides four persistence methods:</p>
+
+            <h3>writeVars()</h3>
+            <p>Saves variables from the step's context to JSON files on disk. The data remains in memory after writing, so the step can continue to use it.</p>
+
+            <h3>loadVars()</h3>
+            <p>Loads previously saved variables from JSON files on disk back into the step's context. Use this to restore state from a prior run or from a setup phase.</p>
+
+            <h3>exportVars()</h3>
+            <p>Saves variables to disk and then removes them from memory. This is useful when dealing with large data sets that you need to persist but do not want to keep in memory for the remainder of the run.</p>
+
+            <h3>loadTempVars()</h3>
+            <p>Loads variables from disk into the step's context, and the loaded data is automatically cleaned up after the step finishes running. This is useful for one-time reads where you need the data only during a single step's execution.</p>
+
+          </article>
+        </div>
+        <div class="docs-prevnext">
+          <a class="docs-prev" href="/docs/quickstart.html">&larr; Quickstart</a>
+          <a class="docs-next" href="/docs/configuration.html">Configuration &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <a href="/"><img src="/img/logo.png" alt="BitDiver" width="50" height="50" /></a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ DOCS ]</samp>
+        <a href="/docs/quickstart.html">Quickstart</a>
+        <a href="/docs/concepts.html">Guide</a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ MORE ]</samp>
+        <a href="https://github.com/bitdiver/runner">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <samp>&copy; 2019-2026 BITDIVER.XHUB.IO</samp>
+    </div>
+  </footer>
+
+  <script src="/js/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logging · BitDiver</title>
+  <meta name="description" content="BitDiver logging adapters, log levels, message structure, and custom adapters" />
+  <link rel="shortcut icon" href="/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/brutalist.css" />
+  <link rel="stylesheet" href="/css/docs.css" />
+</head>
+<body data-theme="tactical">
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo">
+        <img src="/img/logo.png" alt="BitDiver" width="40" height="40" />
+        <span class="site-name">BitDiver</span>
+      </a>
+      <div class="header-right">
+        <nav class="site-nav">
+          <ul>
+            <li><a href="/docs/quickstart.html">[ DOCS ]</a></li>
+            <li><a href="/docs/api.html">[ API ]</a></li>
+            <li><a href="https://github.com/bitdiver/runner">[ GITHUB ]</a></li>
+          </ul>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <span class="theme-toggle-label-dark">CRT</span>
+          <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+          <span class="theme-toggle-label-light">INK</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docMainWrapper wrapper">
+    <!-- SIDEBAR -->
+    <div class="docsNavContainer" id="docsNav">
+      <nav class="toc">
+        <div class="toggleNav">
+          <section class="navWrapper wrapper">
+            <div class="navBreadcrumb">
+              <button id="navToggler" onclick="document.querySelector('.navGroups').classList.toggle('docsSliderActive')">Menu</button>
+              <samp>Documentation</samp>
+            </div>
+            <div class="navGroups">
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Getting Started</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/quickstart.html">Quickstart</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/concepts.html">Core Concepts</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Guides</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/configuration.html">Configuration</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/step-types.html">Step Types</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/execution.html">Execution</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/check.html">Check &amp; Results</a></li>
+                  <li class="navListItem navListItemActive"><a class="navItem" href="/docs/logging.html">Logging</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Reference</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/api.html">API Reference</a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </nav>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container mainContainer docsContainer">
+      <div class="wrapper">
+        <div class="post">
+          <header class="postHeader">
+            <h1 class="postHeaderTitle">Logging</h1>
+          </header>
+          <article>
+
+            <h2>Log Adapter Interface</h2>
+            <p>All log adapters implement the <code>LogAdapterInterface</code>. The interface requires a <code>log()</code> method for writing log entries, a <code>reset()</code> method for clearing state, and <code>levelName</code> / <code>levelNumber</code> properties that control the minimum log level threshold. Any object that satisfies this interface can be used as a log adapter in the runner.</p>
+
+            <h2>Built-in Adapters</h2>
+            <p>BitDiver ships with four log adapter implementations covering the most common use cases:</p>
+            <ul>
+              <li><strong><code>LogAdapterConsole</code></strong> &mdash; Colored stdout output with human-readable formatting. Best for local development and interactive debugging.</li>
+              <li><strong><code>LogAdapterConsoleJson</code></strong> &mdash; JSON-formatted console output with one JSON object per log entry. Ideal for structured logging in CI pipelines and log aggregation systems.</li>
+              <li><strong><code>LogAdapterFile</code></strong> &mdash; Filesystem storage organized by run, testcase, and step. Each execution creates a directory hierarchy that can be inspected after the run completes.</li>
+              <li><strong><code>LogAdapterMemory</code></strong> &mdash; In-memory storage that collects all log entries in an array. Designed for testing scenarios where you need to assert on log output without filesystem or console side effects.</li>
+            </ul>
+            <pre><code class="language-typescript">import { LogAdapterConsole, LogAdapterFile } from '@bitdiver/runner'
+
+const consoleAdapter = new LogAdapterConsole({ levelName: 'info' })
+const fileAdapter = new LogAdapterFile({ levelName: 'debug', dir: './logs' })</code></pre>
+
+            <h2>Log Levels</h2>
+            <p>BitDiver defines five log levels, each with a numeric value. Setting <code>levelName</code> on an adapter filters out all messages with a lower numeric level:</p>
+            <ul>
+              <li><strong>debug</strong> (0) &mdash; Verbose diagnostic information for troubleshooting.</li>
+              <li><strong>info</strong> (1) &mdash; General informational messages about execution progress.</li>
+              <li><strong>warning</strong> (2) &mdash; Potentially problematic situations that do not prevent execution.</li>
+              <li><strong>error</strong> (3) &mdash; Errors that affect the current testcase or step.</li>
+              <li><strong>fatal</strong> (4) &mdash; Critical failures that halt the entire run.</li>
+            </ul>
+            <p>For example, setting <code>levelName: 'warning'</code> means the adapter will only process messages at warning level (2) and above, silently discarding debug and info messages.</p>
+
+            <h2>Log Message Structure</h2>
+            <p>Every log entry follows a consistent structure that includes metadata about the current execution context and the actual log data:</p>
+            <pre><code class="language-typescript">{
+  meta: {
+    run: { id, name, start },
+    tc: { id, name, tcCountCurrent, tcCountAll },
+    step: { id, name, stepCountCurrent, stepCountAll, type }
+  },
+  data: any,
+  logLevel: 'info'
+}</code></pre>
+            <p>The <code>meta</code> object provides full context about where in the execution the message originated&mdash;which run, which testcase, and which step. The <code>data</code> field can contain any serializable value: a string, an object, an error, or structured diagnostic information. The <code>logLevel</code> field indicates the severity of the message.</p>
+
+            <h2>Logging in Steps</h2>
+            <p>Inside any step, use the built-in convenience methods to emit log messages at the appropriate level:</p>
+            <ul>
+              <li><code>this.logDebug(data)</code> &mdash; Debug-level message</li>
+              <li><code>this.logInfo(data)</code> &mdash; Info-level message</li>
+              <li><code>this.logWarning(data)</code> &mdash; Warning-level message</li>
+              <li><code>this.logError(data)</code> &mdash; Error-level message</li>
+              <li><code>this.logFatal(data)</code> &mdash; Fatal-level message</li>
+            </ul>
+            <p>Each method accepts any object as the message data. The step automatically populates the <code>meta</code> context from its current execution state, so you only need to provide the payload.</p>
+            <pre><code class="language-typescript">class MyStep extends StepNormal {
+  async run() {
+    await this.logInfo('Starting processing')
+    try {
+      const result = await this.processData()
+      await this.logDebug({ action: 'processData', result })
+    } catch (err) {
+      await this.logError({ message: 'Processing failed', error: err.message })
+    }
+  }
+}</code></pre>
+
+            <h2>Custom Adapters</h2>
+            <p>To send logs to a custom destination, implement the <code>LogAdapterInterface</code>. Your adapter must provide a <code>log()</code> method that receives the structured log message, a <code>reset()</code> method for cleanup, and the <code>levelName</code> and <code>levelNumber</code> properties for filtering.</p>
+            <pre><code class="language-typescript">import { LogAdapterInterface } from '@bitdiver/runner'
+
+class LogAdapterCustom implements LogAdapterInterface {
+  levelName: string
+  levelNumber: number
+
+  constructor(opts: { levelName: string }) {
+    this.levelName = opts.levelName
+    this.levelNumber = this.levelToNumber(opts.levelName)
+  }
+
+  async log(message: any): Promise&lt;void&gt; {
+    if (message.logLevel &lt; this.levelNumber) return
+    // Send to your custom destination
+    await sendToExternalService(message)
+  }
+
+  async reset(): Promise&lt;void&gt; {
+    // Clean up resources if needed
+  }
+
+  private levelToNumber(name: string): number {
+    const levels: Record&lt;string, number&gt; = {
+      debug: 0, info: 1, warning: 2, error: 3, fatal: 4
+    }
+    return levels[name] ?? 1
+  }
+}</code></pre>
+            <p>Pass your custom adapter to the runner just like any built-in adapter. You can also compose multiple adapters by wrapping them in a dispatcher that fans out log messages to several destinations simultaneously.</p>
+
+          </article>
+        </div>
+        <div class="docs-prevnext">
+          <a class="docs-prev" href="/docs/check.html">&larr; Check &amp; Results</a>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <a href="/"><img src="/img/logo.png" alt="BitDiver" width="50" height="50" /></a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ DOCS ]</samp>
+        <a href="/docs/quickstart.html">Quickstart</a>
+        <a href="/docs/concepts.html">Guide</a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ MORE ]</samp>
+        <a href="https://github.com/bitdiver/runner">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <samp>&copy; 2019-2026 BITDIVER.XHUB.IO</samp>
+    </div>
+  </footer>
+
+  <script src="/js/theme.js"></script>
+</body>
+</html>

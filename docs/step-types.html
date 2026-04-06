@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step Types · BitDiver</title>
+  <meta name="description" content="Learn about StepNormal, StepSingle, StepTimed, and step options in BitDiver" />
+  <link rel="shortcut icon" href="/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/brutalist.css" />
+  <link rel="stylesheet" href="/css/docs.css" />
+</head>
+<body data-theme="tactical">
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo">
+        <img src="/img/logo.png" alt="BitDiver" width="40" height="40" />
+        <span class="site-name">BitDiver</span>
+      </a>
+      <div class="header-right">
+        <nav class="site-nav">
+          <ul>
+            <li><a href="/docs/quickstart.html">[ DOCS ]</a></li>
+            <li><a href="/docs/api.html">[ API ]</a></li>
+            <li><a href="https://github.com/bitdiver/runner">[ GITHUB ]</a></li>
+          </ul>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <span class="theme-toggle-label-dark">CRT</span>
+          <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+          <span class="theme-toggle-label-light">INK</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docMainWrapper wrapper">
+    <!-- SIDEBAR -->
+    <div class="docsNavContainer" id="docsNav">
+      <nav class="toc">
+        <div class="toggleNav">
+          <section class="navWrapper wrapper">
+            <div class="navBreadcrumb">
+              <button id="navToggler" onclick="document.querySelector('.navGroups').classList.toggle('docsSliderActive')">Menu</button>
+              <samp>Documentation</samp>
+            </div>
+            <div class="navGroups">
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Getting Started</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/quickstart.html">Quickstart</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/concepts.html">Core Concepts</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Guides</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/configuration.html">Configuration</a></li>
+                  <li class="navListItem navListItemActive"><a class="navItem" href="/docs/step-types.html">Step Types</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/execution.html">Execution</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/check.html">Check &amp; Results</a></li>
+                  <li class="navListItem"><a class="navItem" href="/docs/logging.html">Logging</a></li>
+                </ul>
+              </div>
+              <div class="navGroup">
+                <h3 class="navGroupCategoryTitle">Reference</h3>
+                <ul>
+                  <li class="navListItem"><a class="navItem" href="/docs/api.html">API Reference</a></li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </nav>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container mainContainer docsContainer">
+      <div class="wrapper">
+        <div class="post">
+          <header class="postHeader">
+            <h1 class="postHeaderTitle">Step Types in Detail</h1>
+          </header>
+          <article>
+
+            <p>BitDiver provides three step types to cover different execution patterns: <code>StepNormal</code> for per-testcase work, <code>StepSingle</code> for suite-wide operations, and <code>StepTimed</code> for time-offset scheduling. All three share the same lifecycle and configuration options.</p>
+
+            <h2>Step Lifecycle</h2>
+            <p>All steps follow the same lifecycle:</p>
+            <pre><code>start() &rarr; beforeRun() &rarr; run() &rarr; afterRun() &rarr; end()</code></pre>
+            <ul>
+              <li><code>start()</code> and <code>end()</code> &mdash; Called once per step (not per instance). Use these for one-time setup and teardown.</li>
+              <li><code>beforeRun()</code>, <code>run()</code>, <code>afterRun()</code> &mdash; Called per instance. For a <code>StepNormal</code>, this means once per test case. For a <code>StepSingle</code>, once per suite.</li>
+            </ul>
+
+            <h2>StepNormal</h2>
+            <p>The most common step type. A <code>StepNormal</code> runs once per test case in the suite. Each invocation receives its own test case context.</p>
+            <pre><code class="language-typescript">import { StepNormal } from '@bitdiver/runner'
+
+class SendRequest extends StepNormal {
+  async run() {
+    const url = this.tc.map.get('url')
+    const response = await fetch(url)
+    this.tc.map.set('response', response)
+    await this.logInfo({ message: 'Request sent', url })
+  }
+}</code></pre>
+
+            <h3>Key Properties</h3>
+            <ul>
+              <li><code>this.tc</code> &mdash; <code>EnvironmentTestcase</code> (typed getter). The current test case context with its own map for storing data.</li>
+              <li><code>this.data</code> &mdash; Step data from the suite definition. Whatever was provided in the <code>testcases[].data</code> for this step.</li>
+              <li><code>this.environmentRun</code> &mdash; Run-wide state shared across all steps and test cases.</li>
+              <li><code>this.logAdapter</code> &mdash; The logging adapter for structured output.</li>
+            </ul>
+
+            <h2>StepSingle</h2>
+            <p>Runs once for the entire suite rather than per test case. Use this for shared setup/teardown operations like database seeding, environment provisioning, or aggregate reporting. A <code>StepSingle</code> has access to all test case environments at once.</p>
+            <pre><code class="language-typescript">import { StepSingle } from '@bitdiver/runner'
+
+class ClearDatabase extends StepSingle {
+  async run() {
+    await db.truncate('results')
+    for (const { environment, data } of this.testcases) {
+      environment.map.set('dbCleared', true)
+    }
+    await this.logInfo('Database cleared')
+  }
+}</code></pre>
+
+            <h3>Key Properties</h3>
+            <ul>
+              <li><code>this.testcases</code> &mdash; Array of <code>{ environment: EnvironmentTestcase, data: any }</code>. Gives you access to every test case environment and its associated data.</li>
+              <li>Failure in a single step fails the <strong>entire</strong> run. Use single steps only for operations that are truly global.</li>
+            </ul>
+
+            <h2>StepTimed</h2>
+            <p>Extends <code>StepNormal</code>. Instead of running immediately, a <code>StepTimed</code> waits until a specific time offset from a reference timestamp before executing. This is useful for simulating real-world timing, load testing, or coordinating actions across test cases.</p>
+            <pre><code class="language-typescript">import { StepTimed } from '@bitdiver/runner'
+
+class SendAtTime extends StepTimed {
+  getReferenceTime(): string {
+    return this.tc.map.get('START_TIME')
+  }
+
+  getOffsetSeconds(): number {
+    return this.data.offsetTime
+  }
+
+  async doRun(): Promise&lt;void&gt; {
+    await sendMessage(this.data.payload)
+    await this.logInfo(`Sent at offset ${this.getOffsetSeconds()}s`)
+  }
+}</code></pre>
+
+            <h3>Must Implement</h3>
+            <ul>
+              <li><code>getReferenceTime()</code> &mdash; Returns an ISO timestamp string. The offset is calculated from this point in time.</li>
+              <li><code>getOffsetSeconds()</code> &mdash; Number of seconds to wait after the reference time before executing.</li>
+              <li><code>doRun()</code> &mdash; The actual work. This replaces <code>run()</code> &mdash; do not override <code>run()</code> directly in a <code>StepTimed</code>.</li>
+            </ul>
+            <p>In <code>testMode</code>, delays are skipped and <code>doRun()</code> executes immediately. This keeps your test suite fast during development.</p>
+
+            <h2>Persistence in Steps</h2>
+            <p>Steps can persist and load variables across executions using built-in persistence methods. These are available on both <code>StepNormal</code> and <code>StepSingle</code>:</p>
+            <ul>
+              <li><code>writeVars(vars)</code> &mdash; Persists variables to disk so they survive across runs. Use this to store credentials, session tokens, or any state that should be available in later suites.</li>
+              <li><code>loadVars()</code> &mdash; Loads previously persisted variables back into the step. Returns the stored object.</li>
+              <li><code>exportVars(vars)</code> &mdash; Exports variables to the run environment so other steps in the same run can access them.</li>
+              <li><code>loadTempVars()</code> &mdash; Loads temporary variables that were exported by a previous step in the same run. Unlike <code>loadVars()</code>, these do not persist to disk.</li>
+            </ul>
+            <pre><code class="language-typescript">// In a StepNormal: persist an auth token
+async run() {
+  const token = await authenticate(this.data.credentials)
+  await this.writeVars({ authToken: token })
+}
+
+// In a later step: load the persisted token
+async run() {
+  const vars = await this.loadVars()
+  const token = vars.authToken
+  // use token...
+}
+
+// Export vars for other steps in the same run
+async run() {
+  await this.exportVars({ sessionId: '12345' })
+}
+
+// Load exported vars from a previous step
+async run() {
+  const temp = await this.loadTempVars()
+  const sessionId = temp.sessionId
+}</code></pre>
+
+            <h2>Step Options</h2>
+            <p>All step types accept constructor options that control their behaviour within the runner:</p>
+            <ul>
+              <li><code>name</code> &mdash; A human-readable name for the step, used in logs and reporting.</li>
+              <li><code>logAdapter</code> &mdash; Override the default log adapter for this specific step.</li>
+              <li><code>needData: false</code> &mdash; Step runs even without data in the suite definition. By default, steps are skipped for test cases that provide no data for them.</li>
+              <li><code>runOnError: true</code> &mdash; Step runs even if the test case has already failed in a previous step. Useful for cleanup or reporting steps that must always execute.</li>
+              <li><code>maxParallelSteps</code> &mdash; Override the global parallelism limit for this step. Set to <code>1</code> to force serial execution, or increase it for I/O-heavy steps.</li>
+            </ul>
+            <pre><code class="language-typescript">class CleanupStep extends StepNormal {
+  constructor(opts) {
+    super({
+      ...opts,
+      name: 'cleanup',
+      needData: false,
+      runOnError: true,
+      maxParallelSteps: 1
+    })
+  }
+
+  async run() {
+    await cleanupResources()
+  }
+}</code></pre>
+
+          </article>
+        </div>
+        <div class="docs-prevnext">
+          <a class="docs-prev" href="/docs/configuration.html">&larr; Configuration</a>
+          <a class="docs-next" href="/docs/execution.html">Execution &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <a href="/"><img src="/img/logo.png" alt="BitDiver" width="50" height="50" /></a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ DOCS ]</samp>
+        <a href="/docs/quickstart.html">Quickstart</a>
+        <a href="/docs/concepts.html">Guide</a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ MORE ]</samp>
+        <a href="https://github.com/bitdiver/runner">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <samp>&copy; 2019-2026 BITDIVER.XHUB.IO</samp>
+    </div>
+  </footer>
+
+  <script src="/js/theme.js"></script>
+</body>
+</html>

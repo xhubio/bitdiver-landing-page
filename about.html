@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charSet="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>About · BitDiver</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="About BitDiver — an open-source declarative E2E test automation framework by BeeBack UG. Meet the team behind the project." />
+  <meta property="og:title" content="About · BitDiver" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://bitdiver.xhub.io/about" />
+  <meta property="og:description" content="About BitDiver — an open-source declarative E2E test automation framework by BeeBack UG. Meet the team behind the project." />
+  <meta property="og:image" content="https://bitdiver.xhub.io/img/social-card.png" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:image" content="https://bitdiver.xhub.io/img/social-card.png" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://bitdiver.xhub.io/about" />
+  <link rel="shortcut icon" href="/img/favicon.png" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/css/prism.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/css/brutalist.css" />
+</head>
+
+<body data-theme="tactical">
+  <div class="crt-overlay" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="site-logo"><img src="/img/logo.png" alt="BitDiver" width="40" height="40" /><span class="site-name">BitDiver</span></a>
+      <div class="header-right">
+        <nav class="site-nav">
+          <ul>
+            <li><a href="/docs/quickstart.html">[ DOCS ]</a></li>
+            <li><a href="/docs/api.html">[ API ]</a></li>
+            <li><a href="https://github.com/bitdiver/runner">[ GITHUB ]</a></li>
+          </ul>
+        </nav>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <span class="theme-toggle-label-dark">CRT</span>
+          <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
+          <span class="theme-toggle-label-light">INK</span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="navPusher">
+    <div class="docMainWrapper wrapper">
+      <div class="container mainContainer documentContainer postContainer">
+        <div class="wrapper">
+          <div class="post">
+            <header class="postHeader">
+              <h1>About BitDiver</h1>
+            </header>
+            <h2>The Project</h2>
+            <p>BitDiver is an open-source framework for declarative E2E test automation. It was created to solve a common problem in software testing: orchestrating complex end-to-end test suites with clear step-based lifecycle management, parallel execution, and structured logging.</p>
+            <p>Using a declarative approach — where test suites, test cases, and steps are defined as structured data — BitDiver automatically handles execution order, dependency resolution, environment management, and reporting. It reads test definitions and orchestrates step execution with full lifecycle control: start, beforeRun, run, afterRun, and end.</p>
+            <p>BitDiver is built on Node.js and TypeScript, designed for testing distributed systems and microservice architectures at scale.</p>
+
+            <h2>Creator &amp; Lead</h2>
+            <p><strong><a href="https://cv.xhub.io/de/torsten.link">Torsten Link</a></strong> — Creator of BitDiver, Senior Software Architect &amp; Test Automation Lead</p>
+            <p>Torsten is an experienced software architect with deep expertise in quality assurance, test automation, and CI/CD pipeline design. He has over 11 years of Node.js and TypeScript experience and has led QA efforts on large-scale enterprise platforms — including Deutsche Bahn's passenger information system, where he established test automation architecture across hundreds of microservices.</p>
+            <p>His background in building scalable testing infrastructure for complex distributed systems led directly to the creation of BitDiver: a framework that brings structure and reliability to end-to-end test automation.</p>
+
+            <h2>The Company</h2>
+            <p>BitDiver is an open-source project by <a href="https://xhub.io">BeeBack UG</a> (haftungsbeschränkt), based in Frankfurt am Main, Germany. BeeBack UG develops digital services and open-source tools under the xhub.io brand. Managing Director: Patrick Jerominek.</p>
+
+            <h2>Get Involved</h2>
+            <p>BitDiver is released under the MIT License. Contributions are welcome!</p>
+            <ul>
+              <li><a href="https://github.com/bitdiver/runner">GitHub Repository</a></li>
+              <li><a href="/docs/quickstart.html">Quickstart Guide</a></li>
+              <li>Contact: <a href="mailto:opensource@xhub.io">opensource@xhub.io</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo"><a href="/"><img src="/img/logo.png" alt="BitDiver" width="40" height="40" /></a></div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ DOCS ]</samp>
+        <a href="/docs/quickstart.html">Quickstart</a>
+        <a href="/docs/api.html">API</a>
+      </div>
+      <div class="footer-col">
+        <samp class="footer-heading">[ MORE ]</samp>
+        <a href="/about">About</a>
+        <a href="/imprint">Imprint</a>
+        <a href="/privacyPolicy">Privacy Policy</a>
+        <a href="https://github.com/bitdiver/runner">GitHub</a>
+        <a href="#" onclick="resetCookieConsent();return false;">Manage Cookies</a>
+      </div>
+    </div>
+    <div class="footer-copyright"><samp>&copy; 2018-2026 BITDIVER.XHUB.IO &mdash; An Open Source Project by <a href="https://xhub.io">BeeBack UG</a>.</samp></div>
+  </footer>
+  <!-- Cookie Consent Banner -->
+  <div id="cookie-banner" class="cookie-banner" style="display:none;">
+    <div class="cookie-inner">
+      <div class="cookie-main">
+        <samp class="cookie-title">[ COOKIE PREFERENCES ]</samp>
+        <p class="cookie-text">We use cookies to analyze site usage and improve your experience. You can choose which
+          cookies to allow below. See our <a href="/privacyPolicy">Privacy Policy</a> for details.</p>
+        <div class="cookie-actions">
+          <button onclick="acceptAllCookies()" class="cookie-btn cookie-accept">ACCEPT ALL</button>
+          <button onclick="savePreferences()" class="cookie-btn cookie-save">SAVE PREFERENCES</button>
+          <button onclick="declineAllCookies()" class="cookie-btn cookie-decline">DECLINE ALL</button>
+        </div>
+      </div>
+      <div class="cookie-categories">
+        <div class="cookie-category">
+          <div class="cookie-cat-header">
+            <label class="cookie-toggle"><input type="checkbox" checked disabled /><span
+                class="cookie-slider cookie-slider-locked"></span></label>
+            <div class="cookie-cat-info"><samp class="cookie-cat-name">ESSENTIAL</samp><span
+                class="cookie-cat-badge">Always active</span></div>
+            <button class="cookie-expand" onclick="this.closest('.cookie-category').classList.toggle('open')"
+              aria-label="Toggle details">+</button>
+          </div>
+          <div class="cookie-cat-details">
+            <table class="cookie-table">
+              <tr>
+                <td><samp>Provider</samp></td>
+                <td>bitdiver.xhub.io (First Party)</td>
+              </tr>
+              <tr>
+                <td><samp>Cookies</samp></td>
+                <td><code>bitdiver-theme</code> — Stores your theme preference (CRT/INK)</td>
+              </tr>
+              <tr>
+                <td><samp>Duration</samp></td>
+                <td>Persistent (localStorage)</td>
+              </tr>
+              <tr>
+                <td><samp>Purpose</samp></td>
+                <td>Remember your display preferences across visits</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="cookie-category">
+          <div class="cookie-cat-header">
+            <label class="cookie-toggle"><input type="checkbox" id="cookie-analytics" checked /><span
+                class="cookie-slider"></span></label>
+            <div class="cookie-cat-info"><samp class="cookie-cat-name">ANALYTICS</samp></div>
+            <button class="cookie-expand" onclick="this.closest('.cookie-category').classList.toggle('open')"
+              aria-label="Toggle details">+</button>
+          </div>
+          <div class="cookie-cat-details">
+            <table class="cookie-table">
+              <tr>
+                <td><samp>Provider</samp></td>
+                <td>Google LLC (Google Analytics 4)</td>
+              </tr>
+              <tr>
+                <td><samp>Cookies</samp></td>
+                <td><code>_ga</code>, <code>_ga_PMNJR2G9ZH</code> — Distinguish unique visitors and sessions</td>
+              </tr>
+              <tr>
+                <td><samp>Duration</samp></td>
+                <td><code>_ga</code>: 2 years, <code>_ga_*</code>: 2 years</td>
+              </tr>
+              <tr>
+                <td><samp>Purpose</samp></td>
+                <td>Measure site usage, page views, and traffic sources to improve the site. IP addresses are
+                  anonymized.</td>
+              </tr>
+              <tr>
+                <td><samp>Privacy</samp></td>
+                <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy
+                    Policy</a></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  </script>
+  <script src="/js/theme.js"></script>
+  <script src="/js/cookies.js"></script>
+</body>
+
+</html>
