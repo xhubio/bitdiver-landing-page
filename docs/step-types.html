@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Step Types · BitDiver</title>
-  <meta name="description" content="Learn about StepNormal, StepSingle, StepTimed, and step options in BitDiver" />
+  <meta name="description" content="Learn about StepNormal, StepSingle, built-in timing steps, and step options in BitDiver" />
   <link rel="shortcut icon" href="/img/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -87,7 +87,7 @@
           </header>
           <article>
 
-            <p>BitDiver provides three step types to cover different execution patterns: <code>StepNormal</code> for per-testcase work, <code>StepSingle</code> for suite-wide operations, and <code>StepTimed</code> for time-offset scheduling. All three share the same lifecycle and configuration options.</p>
+            <p>BitDiver provides two primary step types: <code>StepNormal</code> for per-testcase work and <code>StepSingle</code> for suite-wide operations. Timing is handled by the Runner using built-in steps. All step types share the same lifecycle and configuration options.</p>
 
             <h2>Step Lifecycle</h2>
             <p>All steps follow the same lifecycle:</p>
@@ -138,10 +138,30 @@ class ClearDatabase extends StepSingle {
               <li>Failure in a single step fails the <strong>entire</strong> run. Use single steps only for operations that are truly global.</li>
             </ul>
 
-            <h2>StepTimed</h2>
-            <p>Extends <code>StepNormal</code>. Instead of running immediately, a <code>StepTimed</code> waits until a specific time offset from a reference timestamp before executing. This is useful for simulating real-world timing, load testing, or coordinating actions across test cases.</p>
+            <h2>Built-in Timing Steps</h2>
+            <p>Timing is managed by the Runner using three built-in steps that are pre-registered in the <code>StepRegistry</code>. You do not need to register them manually &mdash; they are available by default under the names <code>Wait</code>, <code>DetermineStartTime</code>, and <code>CheckStartTime</code>.</p>
+
+            <h3>StepDetermineStartTime</h3>
+            <p>Extends <code>StepSingle</code>. Calculates a reference time for subsequent timed steps. The reference time is rounded up to the next full minute, accounting for an optional offset and per-testcase delay. The result is stored in <code>EnvironmentRun</code> under the <code>REFERENCE_TIME_KEY</code> constant.</p>
+            <pre><code class="language-typescript">// In your suite definition, use with inline parameters:
+{ "step": "DetermineStartTime", "offsetSeconds": 60, "delaySeconds": 5 }</code></pre>
+
+            <h3>StepCheckStartTime</h3>
+            <p>Extends <code>StepSingle</code>. Verifies that the timing budget has not been exceeded. If the reference time has already passed (the setup phase took too long), the step logs a fatal error and aborts the run. Otherwise it waits until the reference time is reached. In <code>testMode</code>, waiting is skipped but overrun detection still applies.</p>
+
+            <h3>StepWait</h3>
+            <p>Extends <code>StepSingle</code>. A simple configurable wait step. Accepts <code>seconds</code> as data. In <code>testMode</code>, the delay is skipped entirely.</p>
+            <pre><code class="language-typescript">// In your suite definition:
+{ "step": "Wait", "seconds": 30 }</code></pre>
+
+            <h3>Runner Timing for Steps</h3>
+            <p>Steps in the suite definition can carry a <code>timing</code> property with an <code>offsetSeconds</code> value. Before executing each timed step, the Runner waits until <code>referenceTime + offsetSeconds</code> is reached. All delays are bypassed in <code>testMode</code>.</p>
+
+            <h2>StepTimed (Deprecated)</h2>
+            <p>The legacy <code>StepTimed</code> class still exists for backwards compatibility. It extends <code>StepNormal</code> and requires implementing <code>getReferenceTime()</code>, <code>getOffsetSeconds()</code>, and <code>doRun()</code>. New suites should use Runner-managed timing instead.</p>
             <pre><code class="language-typescript">import { StepTimed } from '@xhubio/bitdiver-runner'
 
+// DEPRECATED — use Runner-managed timing instead
 class SendAtTime extends StepTimed {
   getReferenceTime(): string {
     return this.tc.map.get('START_TIME')
@@ -156,14 +176,6 @@ class SendAtTime extends StepTimed {
     await this.logInfo(`Sent at offset ${this.getOffsetSeconds()}s`)
   }
 }</code></pre>
-
-            <h3>Must Implement</h3>
-            <ul>
-              <li><code>getReferenceTime()</code> &mdash; Returns an ISO timestamp string. The offset is calculated from this point in time.</li>
-              <li><code>getOffsetSeconds()</code> &mdash; Number of seconds to wait after the reference time before executing.</li>
-              <li><code>doRun()</code> &mdash; The actual work. This replaces <code>run()</code> &mdash; do not override <code>run()</code> directly in a <code>StepTimed</code>.</li>
-            </ul>
-            <p>In <code>testMode</code>, delays are skipped and <code>doRun()</code> executes immediately. This keeps your test suite fast during development.</p>
 
             <h2>Persistence in Steps</h2>
             <p>Steps can persist and load variables across executions using built-in persistence methods. These are available on both <code>StepNormal</code> and <code>StepSingle</code>:</p>

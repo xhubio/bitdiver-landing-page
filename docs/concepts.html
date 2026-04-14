@@ -95,7 +95,7 @@
               <li><strong>Config</strong> &mdash; Loads and validates configuration using Zod schemas. Supports environment variable overrides, inline values, file-based defaults, and automatic secret masking.</li>
               <li><strong>Suite Builder</strong> &mdash; Reads YAML or JSON configuration files and constructs a suite definition. Handles timed file scanning and step generation from filename prefixes.</li>
               <li><strong>Definition</strong> &mdash; TypeScript interfaces that describe the serialized structure of suites, test cases, and steps. Provides JSON schema validation for suite definitions.</li>
-              <li><strong>Model</strong> &mdash; Core execution model containing step classes (Normal, Single, Timed), environments (Run and Testcase), and the StepRegistry.</li>
+              <li><strong>Model</strong> &mdash; Core execution model containing step classes (Normal, Single), built-in timing steps (Wait, DetermineStartTime, CheckStartTime), environments (Run and Testcase), and the StepRegistry.</li>
               <li><strong>Runner Server</strong> &mdash; The execution engine. Sorts steps by dependency, manages parallel execution, reports progress, and orchestrates the full lifecycle.</li>
               <li><strong>Check</strong> &mdash; Automatic result comparison using deep object diffing. Supports directives for Time, Number, Regex, and Contains matching. Generates summary and detail reports.</li>
               <li><strong>Log Adapter</strong> &mdash; Pluggable logging with Console, ConsoleJson, File, and Memory adapters. Provides structured log messages with metadata and source tracking.</li>
@@ -113,8 +113,17 @@
             <h3>StepSingle</h3>
             <p>Runs once for the entire suite, regardless of how many test cases exist. Access all test cases via the typed <code>this.testcases</code> getter. Use this for shared setup and teardown operations like initializing a database, starting a server, or cleaning up after all tests complete.</p>
 
-            <h3>StepTimed</h3>
-            <p>Behaves like a StepNormal but waits until a configured time offset has elapsed before executing. This is useful for simulating real-world timing in integration tests &mdash; for example, triggering an action 30 seconds after a previous step to test timeout behavior or delayed processing.</p>
+            <h3>Runner-Managed Timing</h3>
+            <p>Timing is managed by the Runner itself using three built-in steps that are pre-registered in the StepRegistry:</p>
+            <ul>
+              <li><code>StepDetermineStartTime</code> &mdash; Calculates a reference time by rounding up to the next full minute, accounting for an optional offset and per-testcase delay. Stores the result in <code>EnvironmentRun</code>.</li>
+              <li><code>StepCheckStartTime</code> &mdash; Verifies that the timing budget has not been exceeded. If the reference time has already passed, the step logs a fatal error and aborts the run. Otherwise it waits until the reference time is reached.</li>
+              <li><code>StepWait</code> &mdash; A configurable wait step. Accepts <code>{ seconds: number }</code> as data. Delays are skipped in <code>testMode</code>.</li>
+            </ul>
+            <p>Timed steps in the suite definition carry a <code>timing</code> property with an <code>offsetSeconds</code> value. Before executing each timed step, the Runner waits until <code>referenceTime + offsetSeconds</code> is reached. All delays are bypassed in <code>testMode</code>.</p>
+
+            <h3>StepTimed (Deprecated)</h3>
+            <p>The legacy <code>StepTimed</code> class still exists for backwards compatibility. It extends <code>StepNormal</code> and requires implementing <code>getReferenceTime()</code>, <code>getOffsetSeconds()</code>, and <code>doRun()</code>. New suites should use Runner-managed timing instead.</p>
 
             <h2>Environments</h2>
             <p>BitDiver provides two environment types that act as data stores during a test run:</p>
@@ -128,8 +137,29 @@
             <pre><code>OK &rarr; WARNING &rarr; ERROR &rarr; FATAL</code></pre>
             <p>If a step sets the status to <code>ERROR</code>, a later step cannot reset it to <code>OK</code>. This ensures that the final status always reflects the worst outcome encountered during the run.</p>
 
+            <h2>Suite Builder</h2>
+            <p>The Suite Builder creates suite definitions from configuration using a three-phase model:</p>
+            <ol>
+              <li><strong>Setup</strong> &mdash; Sequential steps for preparation (database clearing, config loading, etc.)</li>
+              <li><strong>Timed</strong> &mdash; Auto-generated from test data files scanned in testcase directories, or defined explicitly. Files matching <code>&lt;TIME&gt;_&lt;TYPE&gt;_*.json</code> are parsed and mapped to step classes via <code>timedStepMapping</code>. Custom regex patterns with a <code>&lt;TIME&gt;</code> placeholder are also supported.</li>
+              <li><strong>Teardown</strong> &mdash; Sequential steps for cleanup and reporting.</li>
+            </ol>
+
+            <h3>Step Entries with Parameters</h3>
+            <p>Setup and teardown steps can be specified as simple strings or as objects with inline parameters. Parameters become step data for all testcases:</p>
+            <pre><code class="language-json">{
+  "setup": [
+    "SetupEnvironmentRun",
+    { "step": "Wait", "seconds": 30 },
+    "ClearDatabase"
+  ],
+  "teardown": [
+    "GenerateReport"
+  ]
+}</code></pre>
+
             <h2>Suite Definition</h2>
-            <p>A suite definition is a data structure (typically loaded from YAML or JSON) that tells the runner which steps to execute and with which data. It has three key parts:</p>
+            <p>A suite definition is a data structure (produced by the Suite Builder or created manually) that tells the runner which steps to execute and with which data. It has three key parts:</p>
 
             <h3>steps</h3>
             <p>An ordered list of step names. This determines the execution sequence &mdash; the runner processes steps in the order they appear in this array.</p>
