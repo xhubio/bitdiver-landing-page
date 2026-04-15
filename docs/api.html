@@ -96,14 +96,23 @@
 
   // Suite Builder
   createSuiteFromConfig,
+  buildTimedSteps,
+  scanTimedFiles,
+  suiteConfigSchema,
 
   // Model — Steps
   StepBase,
   StepNormal,
   StepSingle,
-  StepTimed,
+  StepTimed,            // deprecated
   StepSetupConfig,
   StepRegistry,
+
+  // Model — Built-in Timing Steps
+  StepWait,
+  StepDetermineStartTime,
+  StepCheckStartTime,
+  REFERENCE_TIME_KEY,
 
   // Model — Environments
   EnvironmentRun,
@@ -139,12 +148,19 @@
               </thead>
               <tbody>
                 <tr><td><code>loadConfig()</code></td><td>Config</td><td>Load and validate configuration from file + env vars + inline values</td></tr>
-                <tr><td><code>createSuiteFromConfig()</code></td><td>Suite Builder</td><td>Create suite definition from YAML/JSON config</td></tr>
+                <tr><td><code>createSuiteFromConfig()</code></td><td>Suite Builder</td><td>Create suite definition from config (three phases: setup &rarr; timed &rarr; teardown)</td></tr>
+                <tr><td><code>buildTimedSteps()</code></td><td>Suite Builder</td><td>Generate timed step definitions from parsed file names</td></tr>
+                <tr><td><code>scanTimedFiles()</code></td><td>Suite Builder</td><td>Scan directories for timed test data files</td></tr>
+                <tr><td><code>suiteConfigSchema</code></td><td>Suite Builder</td><td>Zod schema for suite builder configuration</td></tr>
                 <tr><td><code>StepNormal</code></td><td>Model</td><td>Base class for per-testcase steps</td></tr>
                 <tr><td><code>StepSingle</code></td><td>Model</td><td>Base class for once-per-suite steps</td></tr>
-                <tr><td><code>StepTimed</code></td><td>Model</td><td>Base class for time-delayed steps</td></tr>
+                <tr><td><code>StepTimed</code></td><td>Model</td><td>Base class for time-delayed steps (deprecated &mdash; use Runner-managed timing)</td></tr>
                 <tr><td><code>StepSetupConfig</code></td><td>Model</td><td>Generic config-loading step</td></tr>
-                <tr><td><code>StepRegistry</code></td><td>Model</td><td>Registry mapping names to step classes</td></tr>
+                <tr><td><code>StepWait</code></td><td>Model</td><td>Built-in wait step (skipped in testMode). Pre-registered as <code>Wait</code></td></tr>
+                <tr><td><code>StepDetermineStartTime</code></td><td>Model</td><td>Calculates reference time for timed steps. Pre-registered as <code>DetermineStartTime</code></td></tr>
+                <tr><td><code>StepCheckStartTime</code></td><td>Model</td><td>Verifies timing budget and waits for reference time. Pre-registered as <code>CheckStartTime</code></td></tr>
+                <tr><td><code>REFERENCE_TIME_KEY</code></td><td>Model</td><td>Key used to store/retrieve reference time in EnvironmentRun</td></tr>
+                <tr><td><code>StepRegistry</code></td><td>Model</td><td>Registry mapping names to step classes (pre-registers built-in timing steps)</td></tr>
                 <tr><td><code>EnvironmentRun</code></td><td>Model</td><td>Run-wide shared state</td></tr>
                 <tr><td><code>EnvironmentTestcase</code></td><td>Model</td><td>Per-testcase state</td></tr>
                 <tr><td><code>Runner</code></td><td>Runner Server</td><td>Suite execution engine</td></tr>
