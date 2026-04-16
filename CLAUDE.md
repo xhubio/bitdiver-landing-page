@@ -32,7 +32,7 @@ A global `* { border-radius: 0 !important }` rule is intentional — the brutali
 
 ## Cookies & Analytics
 
-`js/cookies.js` implements a cookie-consent banner that conditionally loads Google Analytics. The GA measurement ID is currently the placeholder `G-XXXXXXXXXX` in `loadGA()` / `removeGA()` — replace consistently in all three spots (script src, `gtag('config', …)`, and the two `_ga*` cookie-clear lines) when wiring real analytics. Consent state lives in `localStorage` key `bitdiver-cookies` as JSON `{ analytics: boolean }`; legacy string values (`"accepted"`) are migrated on load.
+`js/cookies.js` implements a cookie-consent banner that conditionally loads Google Analytics 4. The active Measurement ID is **`G-RW692TPH98`** — it appears in four places inside `loadGA()` / `removeGA()` (script src, `gtag('config', …)`, `ga-disable-<id>` window flag, and the `_ga_<suffix>` cookie-clear line). Swap all four in lockstep if the property is ever rotated. The corresponding `_ga_RW692TPH98` session cookie is also named verbatim in the cookie-disclosure tables of `about.html`, `imprint.html`, `privacyPolicy.html` — keep those in sync too. Consent state lives in `localStorage` key `bitdiver-cookies` as JSON `{ analytics: boolean }`; legacy string values (`"accepted"`) are migrated on load.
 
 ## SEO
 

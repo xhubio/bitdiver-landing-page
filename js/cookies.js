@@ -4,21 +4,21 @@ function loadGA() {
   var s = document.createElement('script');
   s.id = 'ga-script';
   s.async = true;
-  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-RW692TPH98';
   document.head.appendChild(s);
   window.dataLayer = window.dataLayer || [];
   function gtag() { dataLayer.push(arguments); }
   window.gtag = gtag;
   gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
+  gtag('config', 'G-RW692TPH98', { anonymize_ip: true });
 }
 
 function removeGA() {
   var s = document.getElementById('ga-script');
   if (s) s.remove();
-  window['ga-disable-G-XXXXXXXXXX'] = true;
+  window['ga-disable-G-RW692TPH98'] = true;
   document.cookie = '_ga=;expires=Thu, 01 Jan 1970;path=/;domain=.' + location.hostname;
-  document.cookie = '_ga_XXXXXXXXXX=;expires=Thu, 01 Jan 1970;path=/;domain=.' + location.hostname;
+  document.cookie = '_ga_RW692TPH98=;expires=Thu, 01 Jan 1970;path=/;domain=.' + location.hostname;
 }
 
 function acceptAllCookies() {
