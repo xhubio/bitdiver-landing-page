@@ -282,6 +282,78 @@
     </div>
   </section>
 
+  <!-- USE CASES -->
+  <section class="use-cases">
+    <div class="use-cases-header">
+      <samp>USE CASES /// 08 SCENARIOS</samp>
+      <hr />
+    </div>
+    <div class="use-cases-grid">
+      <article class="use-case-card">
+        <samp class="use-case-id">01</samp>
+        <h3>Batch-processing pipelines</h3>
+        <p>Scheduled ETL jobs, file imports, or report generation where one processing window handles 1&nbsp;to&nbsp;N
+          records. BitDiver parallelises the verification so a thousand testcases fit in the same window as one.</p>
+        <samp class="feature-id">BATCH / ETL</samp>
+      </article>
+      <article class="use-case-card">
+        <samp class="use-case-id">02</samp>
+        <h3>Event timing &amp; signal simulation</h3>
+        <p>Time-sensitive event streams &mdash; rail signals, IoT sensors, payment state machines &mdash; where
+          events must fire at exact absolute offsets. Declare <code>timing.offsetSeconds</code> per Step and the
+          Runner owns the clock.</p>
+        <samp class="feature-id">TIMING / REALTIME</samp>
+      </article>
+      <article class="use-case-card">
+        <samp class="use-case-id">03</samp>
+        <h3>API regression &amp; contract tests</h3>
+        <p>Validate REST or GraphQL endpoints across hundreds of testcases. Path-level
+          <code>ignorePaths</code> skip system-generated fields (IDs, timestamps) while real contract drift surfaces
+          in <code>details.json</code>.</p>
+        <samp class="feature-id">API / CONTRACT</samp>
+      </article>
+      <article class="use-case-card">
+        <samp class="use-case-id">04</samp>
+        <h3>Kafka &amp; queue integration tests</h3>
+        <p>Publish events, consume downstream, assert message order and payload shape. Runner-managed timing
+          simulates producer&ndash;consumer gaps without <code>sleep()</code>; a <code>StepSingle</code> handles
+          topic and consumer-group setup once per suite.</p>
+        <samp class="feature-id">KAFKA / QUEUES</samp>
+      </article>
+      <article class="use-case-card">
+        <samp class="use-case-id">05</samp>
+        <h3>Database migration validation</h3>
+        <p>Capture pre-migration state in a <code>StepSingle</code>, run the schema change, deep-diff post-state
+          against expected fixtures. Path ignores skip auto-generated keys while catching real data anomalies.</p>
+        <samp class="feature-id">DB / MIGRATION</samp>
+      </article>
+      <article class="use-case-card">
+        <samp class="use-case-id">06</samp>
+        <h3>Scheduled jobs &amp; cron verification</h3>
+        <p>Jobs that only fire at specific wall-clock moments (rollovers, report cutoffs, subscription renewals).
+          Set <code>offsetSeconds</code> on the trigger Step, flip <code>testMode</code> for CI, and the same
+          suite runs instantly locally and in production-time verification.</p>
+        <samp class="feature-id">CRON / SCHEDULE</samp>
+      </article>
+      <article class="use-case-card">
+        <samp class="use-case-id">07</samp>
+        <h3>Multi-tenant &amp; isolation tests</h3>
+        <p>Run per-tenant testcases in parallel, each with isolated Run and Testcase environments.
+          <code>StepSingle</code> handles shared setup, <code>StepNormal</code> handles per-tenant state &mdash;
+          failures stay scoped to the tenant that broke.</p>
+        <samp class="feature-id">MULTI-TENANT</samp>
+      </article>
+      <article class="use-case-card">
+        <samp class="use-case-id">08</samp>
+        <h3>Legacy-system regression</h3>
+        <p>Wrap SOAP, mainframe protocols, or proprietary transports as custom Steps and compose them into suites in
+          YAML alongside modern APIs. No plugin SDK to learn &mdash; if it&#39;s a TypeScript class, it&#39;s a
+          Step.</p>
+        <samp class="feature-id">LEGACY / SOAP</samp>
+      </article>
+    </div>
+  </section>
+
   <!-- CORE MODULES -->
   <section class="features">
     <div class="features-header">
