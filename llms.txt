@@ -1,0 +1,55 @@
+# BitDiver
+
+> Time-aware E2E test automation framework for TypeScript. Declare test suites in YAML or JSON, implement custom Steps as TypeScript classes, and let the Runner parallelise hundreds of testcases, fire timed Steps at absolute offsets (`referenceTime + offsetSeconds`), and deep-diff results with path-level ignores. Battle-tested at Deutsche Bahn for production regression testing.
+
+BitDiver ships as a single npm package (`@xhubio/bitdiver-runner`) with six modules: Config (Zod-validated, env-override priority, secret masking), Suite Builder (YAML/JSON + timed file scanning), Model (StepNormal, StepSingle, StepRegistry, disk-backed testcase state), Runner (batch vs. normal mode, parallel execution, testMode), Check (deep diff with Time/Number/Regex/Contains directives), and Log Adapter (Console, ConsoleJson, File, Memory).
+
+## Docs
+
+- [Quickstart](https://bitdiver.xhub.io/docs/quickstart.html): Install the runner, write a `StepNormal` class, register it in the `StepRegistry`, run your first suite against YAML testdata in 5 minutes.
+- [Core Concepts](https://bitdiver.xhub.io/docs/concepts.html): Suite, Step, StepRegistry, Runner, environments, and the `start → beforeRun → run → afterRun → end` lifecycle.
+- [Configuration](https://bitdiver.xhub.io/docs/configuration.html): Zod schemas, env-var overrides (`env > inline > file > defaults`), automatic secret masking, `loadConfig()` priority system.
+- [Step Types](https://bitdiver.xhub.io/docs/step-types.html): `StepNormal` (per testcase), `StepSingle` (per suite), Runner-managed timing Steps with `timing.offsetSeconds`.
+- [Execution](https://bitdiver.xhub.io/docs/execution.html): Batch mode (step-major, parallel), normal mode (testcase-major, sequential), progress hooks, log adapters, `testMode`.
+- [Check & Results](https://bitdiver.xhub.io/docs/check.html): Deep-diff with `StepCheck`, directives (Time / Number / Regex / Contains), `ignorePaths` for system-generated fields, `summary.json` + `details.json`.
+- [Logging](https://bitdiver.xhub.io/docs/logging.html): Console, ConsoleJson, File (per-Run/Testcase/Step directories), Memory adapters; every error carries a `source` field.
+- [API Reference](https://bitdiver.xhub.io/docs/api.html): TypeScript surface — `Suite`, `Runner`, `StepNormal`, `StepSingle`, `StepRegistry`, `loadConfig`, `StepCheck`, `LogAdapter*`.
+
+## Use cases
+
+- **Batch-processing pipelines** — scheduled ETL, file imports, report generation; one processing window handles 1-to-N records, BitDiver parallelises the verification.
+- **Event timing & signal simulation** — rail signals, IoT sensors, payment state machines; events fire at exact absolute offsets without `sleep()`.
+- **API regression & contract tests** — REST/GraphQL endpoints across hundreds of testcases, path-level `ignorePaths` for system-generated IDs.
+- **Kafka / queue integration tests** — producer-consumer flows, message order and payload shape assertions, single-shot topic setup via `StepSingle`.
+- **Database migration validation** — pre-state capture in `StepSingle`, schema change, deep-diff against expected fixtures.
+- **Scheduled job / cron verification** — jobs tied to wall-clock moments (rollovers, report cutoffs, renewals) via `offsetSeconds`.
+- **Multi-tenant & isolation tests** — per-tenant parallel testcases, isolated Run/Testcase environments.
+- **Legacy-system regression** — SOAP, mainframe, proprietary transports as TypeScript Step classes alongside modern APIs.
+
+## Architecture
+
+```
+Suite Config (YAML/JSON)
+  → createSuiteFromConfig()
+  → Suite Definition (steps + sparse data + timing)
+  → Runner
+    ├── StepRegistry (resolves step names → classes)
+    ├── ProgressMeter (live status events)
+    └── Parallel Execution (StepNormal per-TC, StepSingle per-suite, Runner-timed)
+  → Check (deep diff vs expected)
+  → Log Adapter (Console / JSON / File / Memory)
+```
+
+Timing model: `timing.startAfterStep` fixes the reference time; `timing.testcaseDelaySeconds` spaces testcases; `stepDefinition.timing.offsetSeconds` fires timed Steps at `referenceTime + offset`. `testMode: true` collapses every delay to zero for CI.
+
+## Companion projects
+
+- [Nanook](https://nanook.xhub.io) — spreadsheet-driven test data generator; turns equivalence-class tables in LibreOffice/Excel/Google Sheets into the JSON testdata files BitDiver consumes.
+
+## Project links
+
+- Repository: https://github.com/xhubio/bitdiver-runner
+- npm package: https://www.npmjs.com/package/@xhubio/bitdiver-runner
+- Homepage: https://bitdiver.xhub.io
+- License: MIT
+- Publisher: BeeBack UG (https://xhub.io)
