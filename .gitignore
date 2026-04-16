@@ -1,1 +1,4 @@
 .idea
+.playwright-mcp
+.vscode
+*.pdf

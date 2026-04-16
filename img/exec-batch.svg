@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 236">
+  <defs>
+    <marker id="arrow-b" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <path d="M0,0 L7,2.5 L0,5 Z" fill="#E61919"/>
+    </marker>
+    <marker id="arrow-bw" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#EAEAEA"/>
+    </marker>
+    <style>
+      text { font-family: monospace; fill: #EAEAEA; text-anchor: middle; }
+      .hdr { font-size: 9px; font-weight: bold; }
+      .caption { font-size: 9px; fill: #EAEAEA; opacity: 0.65; }
+    </style>
+  </defs>
+
+  <!-- Background panel -->
+  <rect x="0" y="0" width="520" height="236" fill="#0A0A0A"/>
+
+  <!-- Step column headers -->
+  <g>
+    <rect x="80"  y="8" width="50" height="18" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="105" y="21" class="hdr">STEP 1</text>
+    <rect x="140" y="8" width="50" height="18" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="165" y="21" class="hdr">STEP 2</text>
+    <rect x="200" y="8" width="50" height="18" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="225" y="21" class="hdr">STEP 3</text>
+    <rect x="260" y="8" width="50" height="18" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="285" y="21" class="hdr">STEP 4</text>
+    <rect x="320" y="8" width="50" height="18" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="345" y="21" class="hdr">STEP 5</text>
+    <rect x="380" y="8" width="50" height="18" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="405" y="21" class="hdr">STEP 6</text>
+    <rect x="440" y="8" width="50" height="18" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="465" y="21" class="hdr">STEP 7</text>
+  </g>
+
+  <!-- Testcase row labels -->
+  <g>
+    <rect x="6" y="40"  width="60" height="22" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="36" y="55" class="hdr">TC 1</text>
+    <rect x="6" y="80"  width="60" height="22" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="36" y="95" class="hdr">TC 2</text>
+    <rect x="6" y="120" width="60" height="22" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="36" y="135" class="hdr">TC 3</text>
+    <rect x="6" y="160" width="60" height="22" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="36" y="175" class="hdr">TC 4</text>
+    <rect x="6" y="200" width="60" height="22" fill="#1A1A1A" stroke="#E61919" stroke-width="1"/>
+    <text x="36" y="215" class="hdr">TC 5</text>
+  </g>
+
+  <!-- Grid cells: 5 rows × 7 columns of 50×22 rects -->
+  <g fill="#1A1A1A" stroke="#EAEAEA" stroke-width="1">
+    <!-- Step 1 column -->
+    <rect x="80"  y="40"  width="50" height="22"/>
+    <rect x="80"  y="80"  width="50" height="22"/>
+    <rect x="80"  y="120" width="50" height="22"/>
+    <rect x="80"  y="160" width="50" height="22"/>
+    <rect x="80"  y="200" width="50" height="22"/>
+    <!-- Step 2 -->
+    <rect x="140" y="40"  width="50" height="22"/>
+    <rect x="140" y="80"  width="50" height="22"/>
+    <rect x="140" y="120" width="50" height="22"/>
+    <rect x="140" y="160" width="50" height="22"/>
+    <rect x="140" y="200" width="50" height="22"/>
+    <!-- Step 3 -->
+    <rect x="200" y="40"  width="50" height="22"/>
+    <rect x="200" y="80"  width="50" height="22"/>
+    <rect x="200" y="120" width="50" height="22"/>
+    <rect x="200" y="160" width="50" height="22"/>
+    <rect x="200" y="200" width="50" height="22"/>
+    <!-- Step 4 -->
+    <rect x="260" y="40"  width="50" height="22"/>
+    <rect x="260" y="80"  width="50" height="22"/>
+    <rect x="260" y="120" width="50" height="22"/>
+    <rect x="260" y="160" width="50" height="22"/>
+    <rect x="260" y="200" width="50" height="22"/>
+    <!-- Step 5 -->
+    <rect x="320" y="40"  width="50" height="22"/>
+    <rect x="320" y="80"  width="50" height="22"/>
+    <rect x="320" y="120" width="50" height="22"/>
+    <rect x="320" y="160" width="50" height="22"/>
+    <rect x="320" y="200" width="50" height="22"/>
+    <!-- Step 6 -->
+    <rect x="380" y="40"  width="50" height="22"/>
+    <rect x="380" y="80"  width="50" height="22"/>
+    <rect x="380" y="120" width="50" height="22"/>
+    <rect x="380" y="160" width="50" height="22"/>
+    <rect x="380" y="200" width="50" height="22"/>
+    <!-- Step 7 -->
+    <rect x="440" y="40"  width="50" height="22"/>
+    <rect x="440" y="80"  width="50" height="22"/>
+    <rect x="440" y="120" width="50" height="22"/>
+    <rect x="440" y="160" width="50" height="22"/>
+    <rect x="440" y="200" width="50" height="22"/>
+  </g>
+
+  <!-- Column-major down-arrows: TCn → TCn+1 inside every column (primary accent) -->
+  <g stroke="#E61919" stroke-width="1.5" fill="none">
+    <!-- Step 1 -->
+    <line x1="105" y1="62"  x2="105" y2="78"  marker-end="url(#arrow-b)"/>
+    <line x1="105" y1="102" x2="105" y2="118" marker-end="url(#arrow-b)"/>
+    <line x1="105" y1="142" x2="105" y2="158" marker-end="url(#arrow-b)"/>
+    <line x1="105" y1="182" x2="105" y2="198" marker-end="url(#arrow-b)"/>
+    <!-- Step 2 -->
+    <line x1="165" y1="62"  x2="165" y2="78"  marker-end="url(#arrow-b)"/>
+    <line x1="165" y1="102" x2="165" y2="118" marker-end="url(#arrow-b)"/>
+    <line x1="165" y1="142" x2="165" y2="158" marker-end="url(#arrow-b)"/>
+    <line x1="165" y1="182" x2="165" y2="198" marker-end="url(#arrow-b)"/>
+    <!-- Step 3 -->
+    <line x1="225" y1="62"  x2="225" y2="78"  marker-end="url(#arrow-b)"/>
+    <line x1="225" y1="102" x2="225" y2="118" marker-end="url(#arrow-b)"/>
+    <line x1="225" y1="142" x2="225" y2="158" marker-end="url(#arrow-b)"/>
+    <line x1="225" y1="182" x2="225" y2="198" marker-end="url(#arrow-b)"/>
+    <!-- Step 4 -->
+    <line x1="285" y1="62"  x2="285" y2="78"  marker-end="url(#arrow-b)"/>
+    <line x1="285" y1="102" x2="285" y2="118" marker-end="url(#arrow-b)"/>
+    <line x1="285" y1="142" x2="285" y2="158" marker-end="url(#arrow-b)"/>
+    <line x1="285" y1="182" x2="285" y2="198" marker-end="url(#arrow-b)"/>
+    <!-- Step 5 -->
+    <line x1="345" y1="62"  x2="345" y2="78"  marker-end="url(#arrow-b)"/>
+    <line x1="345" y1="102" x2="345" y2="118" marker-end="url(#arrow-b)"/>
+    <line x1="345" y1="142" x2="345" y2="158" marker-end="url(#arrow-b)"/>
+    <line x1="345" y1="182" x2="345" y2="198" marker-end="url(#arrow-b)"/>
+    <!-- Step 6 -->
+    <line x1="405" y1="62"  x2="405" y2="78"  marker-end="url(#arrow-b)"/>
+    <line x1="405" y1="102" x2="405" y2="118" marker-end="url(#arrow-b)"/>
+    <line x1="405" y1="142" x2="405" y2="158" marker-end="url(#arrow-b)"/>
+    <line x1="405" y1="182" x2="405" y2="198" marker-end="url(#arrow-b)"/>
+    <!-- Step 7 -->
+    <line x1="465" y1="62"  x2="465" y2="78"  marker-end="url(#arrow-b)"/>
+    <line x1="465" y1="102" x2="465" y2="118" marker-end="url(#arrow-b)"/>
+    <line x1="465" y1="142" x2="465" y2="158" marker-end="url(#arrow-b)"/>
+    <line x1="465" y1="182" x2="465" y2="198" marker-end="url(#arrow-b)"/>
+  </g>
+
+  <!-- Example snake: column 1 bottom → column 2 top (illustrative) -->
+  <path d="M 105 222 C 105 254, 165 254, 165 34" fill="none" stroke="#EAEAEA" stroke-width="0.8" opacity="0.55" marker-end="url(#arrow-bw)"/>
+
+</svg>

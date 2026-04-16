@@ -1573,6 +1573,176 @@ body[data-theme="swiss"] .footer-logo img {
 }
 
 /* ============================================================
+   BUILT FOR — scenario cards
+   ============================================================ */
+.built-for {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 6rem;
+}
+
+.built-for-header {
+  margin-bottom: 0;
+}
+
+.built-for-header samp {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+}
+
+.built-for-header hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 0.75rem 0 0 0;
+}
+
+.built-for-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background-color: var(--border-color);
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.built-for-card {
+  background-color: var(--bg-primary);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-left: 3px solid transparent;
+  transition: background-color 0.3s ease, border-left-color 0.3s ease;
+}
+
+.built-for-card:hover {
+  background-color: var(--bg-secondary);
+  border-left-color: var(--accent-red);
+}
+
+.built-for-icon {
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 200px;
+  align-self: flex-start;
+}
+
+.built-for-icon img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: var(--diagram-filter);
+  transition: filter 0.3s ease;
+}
+
+.built-for-card h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--fg-primary);
+  margin: 0 0 0.75rem 0;
+}
+
+.built-for-card p {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--fg-secondary);
+  margin: 0;
+  flex: 1;
+}
+
+/* ============================================================
+   EXECUTION DIAGRAMS — inline into Execution Modes & Step Types
+   ============================================================ */
+.execution-mode-diagram,
+.step-type-diagram {
+  margin: 0 0 1.5rem 0;
+  width: 100%;
+}
+
+.execution-mode-diagram img,
+.step-type-diagram img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: var(--diagram-filter);
+  transition: filter 0.3s ease;
+}
+
+/* ============================================================
+   FAILURE PROPAGATION — mini-section after Execution Modes
+   ============================================================ */
+.failure-prop {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 6rem;
+}
+
+.failure-prop-header {
+  margin-bottom: 0;
+}
+
+.failure-prop-header samp {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+}
+
+.failure-prop-header hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 0.75rem 0 0 0;
+}
+
+.failure-prop-inner {
+  padding: 2.5rem 2rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.failure-prop-diagram img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: var(--diagram-filter);
+  transition: filter 0.3s ease;
+}
+
+.failure-prop-body h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  color: var(--fg-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.failure-prop-body h3:not(:first-child) {
+  margin-top: 1.25rem;
+}
+
+.failure-prop-body p {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--fg-secondary);
+  margin: 0;
+}
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1024px) {
@@ -1597,6 +1767,15 @@ body[data-theme="swiss"] .footer-logo img {
 
   .step-types-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .built-for-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .failure-prop-inner {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
   }
 }
 
@@ -1699,6 +1878,22 @@ body[data-theme="swiss"] .footer-logo img {
   }
 
   .execution-mode-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .built-for {
+    padding: 0 1rem 4rem;
+  }
+
+  .built-for-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .failure-prop {
+    padding: 0 1rem 4rem;
+  }
+
+  .failure-prop-inner {
     padding: 2rem 1.5rem;
   }
 

@@ -55,7 +55,7 @@
     "license": "https://opensource.org/licenses/MIT",
     "datePublished": "2019-01-01",
     "dateModified": "2026-04-16",
-    "keywords": "test automation, E2E testing, declarative testing, YAML test suites, Runner-managed timing, parallel execution, TypeScript, regression testing",
+    "keywords": "test automation, E2E testing, declarative testing, YAML test suites, Runner-managed timing, parallel execution, TypeScript, regression testing, batch processing testing, real-time event testing, rail signal simulation",
     "sameAs": [
       "https://github.com/xhubio/bitdiver-runner",
       "https://www.npmjs.com/package/@xhubio/bitdiver-runner"
@@ -227,6 +227,36 @@
     </div>
   </section>
 
+  <!-- BUILT FOR -->
+  <section class="built-for">
+    <div class="built-for-header">
+      <samp>BUILT FOR /// SCENARIOS</samp>
+      <hr />
+    </div>
+    <div class="built-for-grid">
+      <article class="built-for-card">
+        <div class="built-for-icon">
+          <img src="/img/scenario-batch.svg" alt="One testcase fanning into N testcases under the same 30-minute batch window" width="200" height="150" loading="lazy" />
+        </div>
+        <h2>Batch processing under a 30-minute ceiling</h2>
+        <p>Some pipelines process a file once every 30 minutes no matter how many records it holds. Testing them one
+          record at a time means every run takes 30 minutes to prove nothing. BitDiver runs a thousand testcases
+          through the same step-per-column so the whole suite finishes in one processing window &mdash; not a
+          thousand.</p>
+      </article>
+      <article class="built-for-card">
+        <div class="built-for-icon">
+          <img src="/img/scenario-timed.svg" alt="Timeline with events fired at +120s and +240s after a reference tick" width="200" height="150" loading="lazy" />
+        </div>
+        <h2>Event simulation on a real clock</h2>
+        <p>Systems that react to the world &mdash; rail signals, payment timeouts, scheduled transitions &mdash;
+          can&#39;t be tested with <code>sleep()</code>. Declare <code>timing.offsetSeconds</code> on each Step and
+          the Runner fires it at <code>referenceTime&nbsp;+&nbsp;offset</code> to the second. Flip
+          <code>testMode</code> and every delay collapses to zero so the same suite runs in CI in seconds.</p>
+      </article>
+    </div>
+  </section>
+
   <!-- CORE MODULES -->
   <section class="features">
     <div class="features-header">
@@ -358,6 +388,9 @@
       <article class="step-type-card">
         <samp class="how-step-id">S</samp>
         <h3>StepSingle</h3>
+        <div class="step-type-diagram">
+          <img src="/img/exec-single-step.svg" alt="Grid showing a StepSingle as one tall cell spanning all five testcase rows, while other steps have one cell per testcase" width="520" height="296" loading="lazy" />
+        </div>
         <p>Runs once for the whole suite, with a typed <code>testcases</code> getter exposing every testcase
           environment at once. Perfect for one-shot setup like clearing a database, seeding a shared fixture, or
           writing a cross-testcase teardown report &mdash; without inventing coordination primitives.</p>
@@ -385,6 +418,9 @@
       <article class="execution-mode-card">
         <samp class="how-step-id">B</samp>
         <h3>Batch Mode (Default)</h3>
+        <div class="execution-mode-diagram">
+          <img src="/img/exec-batch.svg" alt="Grid of 5 testcases by 7 steps with arrows going down each column, showing column-major execution order" width="520" height="296" loading="lazy" />
+        </div>
         <p>Step-major execution. Every testcase runs step&nbsp;1, then every testcase runs step&nbsp;2 &mdash;
           making the step the unit of concurrency. It&#39;s the right default when your steps hit
           horizontally-scaled APIs and you want the fastest path through a wide suite.</p>
@@ -398,6 +434,29 @@
           share a session you can&#39;t interleave. Same suite file, different <code>executionMode</code>.</p>
         <samp class="feature-id">MODE / ROW</samp>
       </article>
+    </div>
+  </section>
+
+  <!-- FAILURE SEMANTICS -->
+  <section class="failure-prop">
+    <div class="failure-prop-header">
+      <samp>WHEN STEPS FAIL /// PROPAGATION</samp>
+      <hr />
+    </div>
+    <div class="failure-prop-inner">
+      <div class="failure-prop-diagram">
+        <img src="/img/exec-failure.svg" alt="Grid showing two FAILED cells in red; downstream cells for those testcases are dashed to indicate they are skipped" width="520" height="296" loading="lazy" />
+      </div>
+      <div class="failure-prop-body">
+        <h3>Isolate or propagate &mdash; you pick at the Step type</h3>
+        <p>When a <code>StepNormal</code> fails, only that testcase stops progressing. Its remaining Steps are
+          skipped while every other testcase continues through the suite.</p>
+        <h3>StepSingle failures are suite-level</h3>
+        <p>A failing <code>StepSingle</code> is a shared fault: every testcase is reported failed from that
+          column onwards. Reach for <code>StepSingle</code> when a failure <em>should</em> block the whole run
+          (shared DB reset, cross-TC fixture), and <code>StepNormal</code> when failures should be isolated per
+          testcase.</p>
+      </div>
     </div>
   </section>
 

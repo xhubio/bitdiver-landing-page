@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">
+  <defs>
+    <marker id="arrow-t" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#E61919"/>
+    </marker>
+    <style>
+      text { font-family: monospace; fill: #EAEAEA; text-anchor: middle; }
+      .tick { font-size: 8px; }
+      .label { font-size: 9px; font-weight: bold; }
+    </style>
+  </defs>
+
+  <!-- Background panel -->
+  <rect x="0" y="0" width="160" height="120" fill="#0A0A0A"/>
+
+  <!-- Timeline baseline -->
+  <line x1="10" y1="72" x2="150" y2="72" stroke="#EAEAEA" stroke-width="1"/>
+  <line x1="150" y1="72" x2="150" y2="72" stroke="#E61919" stroke-width="1.5" marker-end="url(#arrow-t)"/>
+
+  <!-- REF tick -->
+  <line x1="18" y1="66" x2="18" y2="78" stroke="#EAEAEA" stroke-width="1.5"/>
+  <text x="18" y="92" class="tick">REF</text>
+
+  <!-- +120s tick with event burst -->
+  <line x1="64" y1="66" x2="64" y2="78" stroke="#EAEAEA" stroke-width="1.5"/>
+  <text x="64" y="92" class="tick">+120s</text>
+  <line x1="64" y1="66" x2="64" y2="52" stroke="#E61919" stroke-width="1.5"/>
+  <line x1="58" y1="56" x2="70" y2="56" stroke="#E61919" stroke-width="1.5"/>
+  <line x1="60" y1="48" x2="68" y2="48" stroke="#E61919" stroke-width="1.5"/>
+
+  <!-- +240s tick with event burst -->
+  <line x1="110" y1="66" x2="110" y2="78" stroke="#EAEAEA" stroke-width="1.5"/>
+  <text x="110" y="92" class="tick">+240s</text>
+  <line x1="110" y1="66" x2="110" y2="52" stroke="#E61919" stroke-width="1.5"/>
+  <line x1="104" y1="56" x2="116" y2="56" stroke="#E61919" stroke-width="1.5"/>
+  <line x1="106" y1="48" x2="114" y2="48" stroke="#E61919" stroke-width="1.5"/>
+
+  <!-- Framed "ON CLOCK" badge -->
+  <rect x="48" y="10" width="64" height="16" fill="none" stroke="#E61919" stroke-width="1"/>
+  <text x="80" y="22" class="label">ON CLOCK</text>
+
+  <!-- +Nm label -->
+  <text x="140" y="92" class="tick">t</text>
+</svg>
