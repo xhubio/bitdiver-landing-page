@@ -86,34 +86,6 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "HowTo",
-    "name": "How to run E2E tests with BitDiver",
-    "description": "Declare setup, timed, and teardown phases in YAML, register Step classes in the StepRegistry, and hand the suite to the Runner — it parallelises testcases, fires timed Steps at absolute offsets, and emits summary.json plus details.json.",
-    "step": [
-      {
-        "@type": "HowToStep",
-        "position": 1,
-        "name": "Define Your Suite",
-        "text": "Write a YAML or JSON suite config with three phases — setup, timed, teardown — plus a timing block that fixes the reference step and per-testcase delay. Drop your testdata files in per-testcase folders and timed file scanning turns filenames like 120_kafka-event.json into ordered Steps. No per-test boilerplate."
-      },
-      {
-        "@type": "HowToStep",
-        "position": 2,
-        "name": "Register Your Steps",
-        "text": "Subclass StepNormal or StepSingle, implement run(), and register the class in the StepRegistry under the name you used in the suite. Runner-managed timing steps are pre-registered, so typed step code is the only code you have to write."
-      },
-      {
-        "@type": "HowToStep",
-        "position": 3,
-        "name": "Run Your Tests",
-        "text": "Hand the suite, a log adapter, and a progress meter to the Runner. It parallelises the step grid, fires timed Steps at referenceTime + offsetSeconds, and streams status events as it goes. When it's done you get summary.json and details.json, plus a per-Run/Testcase/Step log tree for the ones that failed."
-      }
-    ]
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
       {
