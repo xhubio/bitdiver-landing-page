@@ -4,18 +4,18 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>BitDiver · Declarative E2E Test Automation Framework</title>
+  <title>BitDiver · Time-aware E2E testing in YAML</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="BitDiver is an open-source test automation framework for declarative, data-driven End-to-End testing. Define suites in YAML/JSON, register custom steps, run with parallel execution." />
-  <meta property="og:title" content="BitDiver · Declarative E2E Test Automation Framework" />
+  <meta name="description" content="BitDiver turns regression testing into configuration. Write Steps in TypeScript, declare suites in YAML — the Runner handles timing, parallelism, and diffing." />
+  <meta property="og:title" content="BitDiver · Time-aware E2E testing in YAML" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://bitdiver.xhub.io/" />
-  <meta property="og:description" content="BitDiver is an open-source test automation framework for declarative, data-driven End-to-End testing with TypeScript." />
+  <meta property="og:description" content="BitDiver turns regression testing into configuration. Write Steps in TypeScript, declare suites in YAML — the Runner handles timing, parallelism, and diffing." />
   <meta property="og:image" content="https://bitdiver.xhub.io/img/logo.png" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:image" content="https://bitdiver.xhub.io/img/logo.png" />
-  <meta name="twitter:title" content="BitDiver · Declarative E2E Test Automation Framework" />
-  <meta name="twitter:description" content="An open-source test automation framework for declarative, data-driven End-to-End testing" />
+  <meta name="twitter:title" content="BitDiver · Time-aware E2E testing in YAML" />
+  <meta name="twitter:description" content="BitDiver turns regression testing into configuration. Write Steps in TypeScript, declare suites in YAML — the Runner handles timing, parallelism, and diffing." />
   <meta name="twitter:site" content="@xhubio" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://bitdiver.xhub.io/" />
@@ -35,7 +35,7 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "BitDiver",
-    "description": "A declarative E2E test automation framework. Define test suites in YAML/JSON, register custom steps, and run with parallel execution.",
+    "description": "BitDiver turns regression testing into configuration. Write Steps in TypeScript, declare suites in YAML — the Runner handles timing, parallelism, and diffing.",
     "url": "https://bitdiver.xhub.io",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
@@ -49,15 +49,15 @@
       "name": "xhub.io",
       "url": "https://xhub.io"
     },
-    "codeRepository": "https://github.com/bitdiver/runner",
+    "codeRepository": "https://github.com/xhubio/bitdiver-runner",
     "programmingLanguage": "TypeScript",
     "runtimePlatform": "Node.js",
     "license": "https://opensource.org/licenses/MIT",
     "datePublished": "2019-01-01",
-    "dateModified": "2026-04-06",
-    "keywords": "test automation, E2E testing, declarative testing, data-driven testing, parallel execution, TypeScript",
+    "dateModified": "2026-04-16",
+    "keywords": "test automation, E2E testing, declarative testing, YAML test suites, Runner-managed timing, parallel execution, TypeScript, regression testing",
     "sameAs": [
-      "https://github.com/bitdiver/runner",
+      "https://github.com/xhubio/bitdiver-runner",
       "https://www.npmjs.com/package/@xhubio/bitdiver-runner"
     ]
   }
@@ -68,7 +68,7 @@
     "@type": "WebSite",
     "name": "BitDiver",
     "url": "https://bitdiver.xhub.io",
-    "description": "An open-source test automation framework for declarative, data-driven E2E testing",
+    "description": "BitDiver turns regression testing into configuration. Write Steps in TypeScript, declare suites in YAML — the Runner handles timing, parallelism, and diffing.",
     "publisher": {
       "@type": "Organization",
       "name": "BeeBack UG",
@@ -81,25 +81,25 @@
     "@context": "https://schema.org",
     "@type": "HowTo",
     "name": "How to run E2E tests with BitDiver",
-    "description": "Define test suites declaratively, register custom step implementations, and execute with parallel processing.",
+    "description": "Declare setup, timed, and teardown phases in YAML, register Step classes in the StepRegistry, and hand the suite to the Runner — it parallelises testcases, fires timed Steps at absolute offsets, and emits summary.json plus details.json.",
     "step": [
       {
         "@type": "HowToStep",
         "position": 1,
         "name": "Define Your Suite",
-        "text": "Create a YAML or JSON configuration that declares your test steps, data mappings, and execution order. Use timed file scanning to automatically generate time-based steps from filename prefixes."
+        "text": "Write a YAML or JSON suite config with three phases — setup, timed, teardown — plus a timing block that fixes the reference step and per-testcase delay. Drop your testdata files in per-testcase folders and timed file scanning turns filenames like 120_kafka-event.json into ordered Steps. No per-test boilerplate."
       },
       {
         "@type": "HowToStep",
         "position": 2,
         "name": "Register Your Steps",
-        "text": "Implement custom step classes extending StepNormal or StepSingle. Register them in the StepRegistry with a name that matches your suite configuration. Built-in timing steps are pre-registered."
+        "text": "Subclass StepNormal or StepSingle, implement run(), and register the class in the StepRegistry under the name you used in the suite. Runner-managed timing steps are pre-registered, so typed step code is the only code you have to write."
       },
       {
         "@type": "HowToStep",
         "position": 3,
         "name": "Run Your Tests",
-        "text": "Execute the suite with the Runner. It handles parallel execution, progress reporting, and result collection. Check results automatically with deep comparison and get detailed summaries."
+        "text": "Hand the suite, a log adapter, and a progress meter to the Runner. It parallelises the step grid, fires timed Steps at referenceTime + offsetSeconds, and streams status events as it goes. When it's done you get summary.json and details.json, plus a per-Run/Testcase/Step log tree for the ones that failed."
       }
     ]
   }
@@ -114,7 +114,7 @@
         "name": "What is BitDiver?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "BitDiver is an open-source test automation framework for declarative, data-driven End-to-End testing. It consolidates configuration, suite building, step execution, result checking, and logging into a single TypeScript package."
+          "text": "BitDiver is an open-source E2E test framework that lets you keep test code small and test scenarios in configuration. You write custom Steps in TypeScript, then declare setup, timed, and teardown phases in YAML or JSON. The Runner parallelises testcases, fires timed Steps at absolute offsets from a reference point, and deep-diffs results — battle-tested at Deutsche Bahn on production regression runs."
         }
       },
       {
@@ -122,7 +122,7 @@
         "name": "How do Steps work in BitDiver?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Steps follow a lifecycle: start() → beforeRun() → run() → afterRun() → end(). There are two primary types: StepNormal (runs per testcase) and StepSingle (runs once per suite). Timing is handled by the Runner using built-in steps (DetermineStartTime, CheckStartTime, Wait). Custom steps extend these base classes and implement the run() method."
+          "text": "Each Step instance goes through a fixed lifecycle — start() → beforeRun() → run() → afterRun() → end() — so you always know where to put initialisation, work, and cleanup. Extend StepNormal to run once per testcase, or StepSingle to run once for the whole suite with access to every testcase environment. Timing is not your problem: the Runner owns it through pre-registered steps (DetermineStartTime, CheckStartTime, Wait) and the timing.offsetSeconds you declare in the suite."
         }
       },
       {
@@ -130,7 +130,7 @@
         "name": "What are the execution modes?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "BitDiver supports two execution modes. Batch mode (default) iterates steps first, then testcases per step — optimized for parallel execution. Normal mode iterates testcases first, then steps per testcase — each testcase completes all steps before the next starts."
+          "text": "Pick by what blocks what. Batch mode (the default) is step-major: every testcase runs step 1, then every testcase runs step 2 — ideal when steps hit horizontally-scaled services and the step itself is your concurrency unit. Normal mode is testcase-major: each testcase runs its full pipeline before the next begins — use it when per-testcase state must be torn down completely, or when steps share a non-interleavable session."
         }
       },
       {
@@ -138,7 +138,7 @@
         "name": "How do I write a custom Step?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Create a TypeScript class extending StepNormal or StepSingle. Implement the run() method with your test logic. Register the step in the StepRegistry with a name matching your suite configuration. Access testcase data via the typed tc getter (StepNormal) or testcases getter (StepSingle). Built-in timing steps are pre-registered."
+          "text": "Three lines, really: extend StepNormal or StepSingle, implement run(), and register the class in the StepRegistry under the name you used in the suite config. Inside run(), use the typed tc getter (per-testcase) or testcases getter (per-suite) for context and data — no stringly-typed globals. Timing and logging are already wired up, so your Step only contains the work."
         }
       },
       {
@@ -146,7 +146,7 @@
         "name": "How does configuration work?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "BitDiver uses Zod schemas for configuration validation with TypeScript type inference. The loadConfig() function supports a priority system: environment variables override inline values, which override file values, which override schema defaults. Sensitive fields are automatically masked in logs."
+          "text": "You define a Zod schema and loadConfig() returns a typed, validated config plus a printable representation. Values resolve by priority — environment variables beat inline values, which beat the JSON file, which beats schema defaults — so the same suite runs locally, in CI, and in staging without code branches. Fields you declare as secrets are automatically masked everywhere the config is logged."
         }
       }
     ]
@@ -172,7 +172,7 @@
           <ul>
             <li><a href="/docs/quickstart.html">[ DOCS ]</a></li>
             <li><a href="/docs/api.html">[ API ]</a></li>
-            <li><a href="https://github.com/bitdiver/runner">[ GITHUB ]</a></li>
+            <li><a href="https://github.com/xhubio/bitdiver-runner">[ GITHUB ]</a></li>
           </ul>
         </nav>
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
@@ -193,8 +193,8 @@
         <samp>STATUS: OPERATIONAL</samp>
       </div>
       <h1 class="hero-title">BitDiver</h1>
-      <p class="hero-tagline">Declarative E2E Test Automation Framework</p>
-      <p class="hero-subtitle">Define test suites in YAML, register custom steps, run with parallel execution</p>
+      <p class="hero-tagline">Time-aware E2E testing. In YAML, not code.</p>
+      <p class="hero-subtitle">Describe what should happen and when. BitDiver runs your testcases in parallel, waits for the right moment to the second, diffs the results with path-level ignores, and reports what broke &mdash; driven entirely by a YAML or JSON suite you can read in a review.</p>
       <div class="hero-actions">
         <a href="/docs/quickstart.html" class="btn-primary">/// QUICKSTART</a>
         <a href="/docs/concepts.html" class="btn-secondary">&gt;&gt;&gt; GET STARTED</a>
@@ -216,12 +216,14 @@
   <section class="definition">
     <div class="definition-inner">
       <h2>What is BitDiver?</h2>
-      <p>BitDiver is an open-source test automation framework for declarative, data-driven End-to-End testing. It
-        consolidates configuration management, suite building, step execution, result checking, and logging into a single
-        TypeScript package. Define test suites in YAML or JSON, register custom step implementations, and run them with
-        configurable parallelism. BitDiver supports three step types — normal (per testcase), single (per suite), and
-        Runner-managed timing — with built-in persistence, Zod-validated configuration, and pluggable log adapters.
-        Used by enterprises including Deutsche Bahn for automated regression testing.</p>
+      <p>BitDiver turns regression testing into configuration. You write custom Steps once in TypeScript &mdash;
+        send a request, mutate state, assert a response &mdash; and then compose them into suites declared in YAML or
+        JSON. Adding a scenario means editing config, not shipping test code. The Runner owns the hard parts: it
+        parallelises hundreds of testcases, fires timed Steps at an absolute offset from a reference point (not
+        with flaky <code>sleep()</code>), swaps large testcase data to disk when memory matters, and deep-diffs
+        the results against expected files with path-level ignores for system-generated fields. One TypeScript
+        package, Zod-validated configuration, pluggable logging &mdash; battle-tested at Deutsche Bahn on
+        production regression runs.</p>
     </div>
   </section>
 
@@ -237,8 +239,10 @@
           <img src="/img/fa-config.svg" alt="Configuration icon" width="48" height="48" loading="lazy" />
         </div>
         <h2 class="feature-title">Config</h2>
-        <p>Zod-validated configuration with environment variable overrides and secret masking. Priority system: env vars
-          &gt; inline &gt; file &gt; schema defaults.</p>
+        <p>Typed configuration you can trust in production. Define a Zod schema once and <code>loadConfig()</code>
+          resolves values in priority order &mdash; env vars override inline values, which override the JSON file,
+          which override schema defaults &mdash; so the same suite runs locally, in CI, and in staging without
+          branches. Secret fields you declare are automatically masked in every log line.</p>
         <samp class="feature-id">MODULE / M-01</samp>
       </article>
       <article class="feature-card">
@@ -246,8 +250,10 @@
           <img src="/img/fa-suite.svg" alt="Suite builder icon" width="48" height="48" loading="lazy" />
         </div>
         <h2 class="feature-title">Suite Builder</h2>
-        <p>Declarative suite creation from YAML/JSON config. Automatic timed file scanning and step generation from
-          filename prefixes.</p>
+        <p>Define suites in YAML, not in code. <code>createSuiteFromConfig()</code> assembles setup, timed, and
+          teardown phases from one config file, then scans your testdata directories and auto-generates Steps from
+          filenames like <code>120_kafka-event_payload.json</code>. Adding a testcase is a drop-in, not a pull
+          request against your test harness.</p>
         <samp class="feature-id">MODULE / M-02</samp>
       </article>
       <article class="feature-card">
@@ -255,8 +261,11 @@
           <img src="/img/fa-model.svg" alt="Model icon" width="48" height="48" loading="lazy" />
         </div>
         <h2 class="feature-title">Model</h2>
-        <p>Step classes (Normal, Single), built-in timing steps (Wait, DetermineStartTime, CheckStartTime), environments (Run + Testcase), StepRegistry, and built-in persistence
-          with writeVars/loadVars/exportVars.</p>
+        <p>Three Step types with zero ceremony. Extend <code>StepNormal</code> (once per testcase) or
+          <code>StepSingle</code> (once per suite), then work against a typed <code>tc</code> or
+          <code>testcases</code> getter &mdash; no stringly-typed context objects. When a testcase produces data
+          too big to keep in memory, <code>exportVars</code>, <code>loadVars</code>, and
+          <code>loadTempVars</code> swap it to disk between steps without changing your assertions.</p>
         <samp class="feature-id">MODULE / M-03</samp>
       </article>
       <article class="feature-card">
@@ -264,8 +273,10 @@
           <img src="/img/fa-runner.svg" alt="Runner icon" width="48" height="48" loading="lazy" />
         </div>
         <h2 class="feature-title">Runner Server</h2>
-        <p>Test execution engine with batch and normal modes. Configurable parallelism, progress reporting, and
-          dependency sorting.</p>
+        <p>Parallelism that actually scales. In batch mode (the default) every testcase runs through step&nbsp;1,
+          then every testcase runs step&nbsp;2 &mdash; so the step itself becomes the unit of concurrency, ideal
+          for APIs that scale horizontally. Tune <code>maxParallelSteps</code>, hook live progress events, or flip
+          <code>testMode</code> to collapse every delay for a fast CI run of the exact same suite.</p>
         <samp class="feature-id">MODULE / M-04</samp>
       </article>
       <article class="feature-card">
@@ -273,8 +284,11 @@
           <img src="/img/fa-check.svg" alt="Check icon" width="48" height="48" loading="lazy" />
         </div>
         <h2 class="feature-title">Check</h2>
-        <p>Automatic result comparison using deep object diffing with directives for Time, Number, Regex, and Contains
-          matching. Generates summary and detail reports.</p>
+        <p>Diff what matters, ignore what doesn&#39;t. <code>StepCheck</code> walks expected and actual
+          trees side-by-side and matches with <code>Time</code>, <code>Number</code>, <code>Regex</code>, and
+          <code>Contains</code> directives for fields that shouldn&#39;t be equal literally. Path-level
+          <code>ignorePaths</code> quietly drop system-generated values like message IDs, and every run emits
+          <code>summary.json</code> plus <code>details.json</code> so failures are diffable in review.</p>
         <samp class="feature-id">MODULE / M-05</samp>
       </article>
       <article class="feature-card">
@@ -282,8 +296,11 @@
           <img src="/img/fa-log.svg" alt="Log adapter icon" width="48" height="48" loading="lazy" />
         </div>
         <h2 class="feature-title">Log Adapter</h2>
-        <p>Pluggable logging with Console, ConsoleJson, File, and Memory adapters. Structured log messages with rich
-          metadata and source tracking.</p>
+        <p>Logs that survive the post-mortem. Four adapters &mdash; <code>Console</code>, <code>ConsoleJson</code>,
+          <code>File</code> (one directory tree per Run/Testcase/Step), and <code>Memory</code> for assertions in
+          tests &mdash; share a single structured format. Every error carries a <code>source</code> field
+          identifying the testcase, step, and whether it was a <code>StepSingle</code>, so you stop grepping by
+          timestamp.</p>
         <samp class="feature-id">MODULE / M-06</samp>
       </article>
     </div>
@@ -299,20 +316,25 @@
       <div class="how-step">
         <samp class="how-step-id">01</samp>
         <h3>Define Your Suite</h3>
-        <p>Create a YAML or JSON configuration that declares your test steps, data mappings, and execution order. Use
-          timed file scanning to automatically generate time-based steps from filename prefixes.</p>
+        <p>Write a YAML or JSON suite config with three phases &mdash; <code>setup</code>, <code>timed</code>,
+          <code>teardown</code> &mdash; plus a <code>timing</code> block that fixes the reference step and
+          per-testcase delay. Drop your testdata files in per-testcase folders and timed file scanning turns
+          filenames like <code>120_kafka-event.json</code> into ordered Steps. No per-test boilerplate.</p>
       </div>
       <div class="how-step">
         <samp class="how-step-id">02</samp>
         <h3>Register Your Steps</h3>
-        <p>Implement custom step classes extending StepNormal or StepSingle. Register them in the
-          StepRegistry with a name that matches your suite configuration. Built-in timing steps are pre-registered.</p>
+        <p>Subclass <code>StepNormal</code> or <code>StepSingle</code>, implement <code>run()</code>, and register
+          the class in the <code>StepRegistry</code> under the name you used in the suite. Runner-managed timing
+          steps are pre-registered, so typed step code is the only code you have to write.</p>
       </div>
       <div class="how-step">
         <samp class="how-step-id">03</samp>
         <h3>Run Your Tests</h3>
-        <p>Execute the suite with the Runner. It handles parallel execution, progress reporting, and result collection.
-          Check results automatically with deep comparison and get detailed summaries.</p>
+        <p>Hand the suite, a log adapter, and a progress meter to the <code>Runner</code>. It parallelises the
+          step grid, fires timed Steps at <code>referenceTime + offsetSeconds</code>, and streams status events as
+          it goes. When it&#39;s done you get <code>summary.json</code> and <code>details.json</code>, plus a
+          per-Run/Testcase/Step log tree for the ones that failed.</p>
       </div>
     </div>
   </section>
@@ -327,21 +349,27 @@
       <article class="step-type-card">
         <samp class="how-step-id">N</samp>
         <h3>StepNormal</h3>
-        <p>Executes once per testcase. Access testcase context via typed <code>tc</code> getter. Ideal for data-driven
-          operations like sending requests or validating responses.</p>
+        <p>The workhorse: runs once per testcase. The typed <code>tc</code> getter hands you an
+          <code>EnvironmentTestcase</code> with the step&#39;s declared data, a per-testcase map for state, and
+          structured logging. Reach for it whenever you&#39;re sending a request, mutating per-TC state, or
+          asserting a response.</p>
         <samp class="feature-id">TYPE / PER-TC</samp>
       </article>
       <article class="step-type-card">
         <samp class="how-step-id">S</samp>
         <h3>StepSingle</h3>
-        <p>Executes once for the entire suite. Access all testcases via typed <code>testcases</code> getter. Use for
-          setup/teardown like database initialization or environment preparation.</p>
+        <p>Runs once for the whole suite, with a typed <code>testcases</code> getter exposing every testcase
+          environment at once. Perfect for one-shot setup like clearing a database, seeding a shared fixture, or
+          writing a cross-testcase teardown report &mdash; without inventing coordination primitives.</p>
         <samp class="feature-id">TYPE / PER-SUITE</samp>
       </article>
       <article class="step-type-card">
         <samp class="how-step-id">T</samp>
         <h3>Runner-Managed Timing</h3>
-        <p>The Runner controls timing via built-in steps: DetermineStartTime calculates when to start, CheckStartTime verifies the budget, and Wait pauses execution. Steps carry an <code>offsetSeconds</code> timing property.</p>
+        <p>Write the Step as normal, declare <code>timing.offsetSeconds</code> on it in the suite, and the Runner
+          waits until <code>referenceTime + offset</code> before firing &mdash; plus a configurable
+          <code>testcaseDelaySeconds</code> spacing between testcases. Flip <code>testMode: true</code> for CI and
+          every delay collapses to zero so the same suite runs in seconds.</p>
         <samp class="feature-id">TYPE / TIMED</samp>
       </article>
     </div>
@@ -357,15 +385,17 @@
       <article class="execution-mode-card">
         <samp class="how-step-id">B</samp>
         <h3>Batch Mode (Default)</h3>
-        <p>Column-based execution: iterate steps, then testcases per step. Optimized for parallel execution — all
-          testcases run the same step concurrently before moving to the next step.</p>
+        <p>Step-major execution. Every testcase runs step&nbsp;1, then every testcase runs step&nbsp;2 &mdash;
+          making the step the unit of concurrency. It&#39;s the right default when your steps hit
+          horizontally-scaled APIs and you want the fastest path through a wide suite.</p>
         <samp class="feature-id">MODE / COLUMN</samp>
       </article>
       <article class="execution-mode-card">
         <samp class="how-step-id">R</samp>
         <h3>Normal Mode</h3>
-        <p>Row-based execution: iterate testcases, then steps per testcase. Each testcase runs all its steps
-          sequentially before the next testcase starts.</p>
+        <p>Testcase-major execution. Each testcase runs its full step pipeline end-to-end before the next begins
+          &mdash; the right choice when state must be fully set up and torn down per testcase, or when steps
+          share a session you can&#39;t interleave. Same suite file, different <code>executionMode</code>.</p>
         <samp class="feature-id">MODE / ROW</samp>
       </article>
     </div>
@@ -380,33 +410,44 @@
     <div class="faq-list">
       <details class="faq-item">
         <summary class="faq-question">What is BitDiver?</summary>
-        <p class="faq-answer">BitDiver is an open-source test automation framework for declarative, data-driven
-          End-to-End testing. It consolidates configuration, suite building, step execution, result checking, and logging
-          into a single TypeScript package. Define suites in YAML/JSON, register custom steps, and run with parallel
-          execution.</p>
+        <p class="faq-answer">BitDiver is an open-source E2E test framework that lets you keep test code small
+          and test scenarios in configuration. You write custom Steps in TypeScript, then declare setup, timed,
+          and teardown phases in YAML or JSON. The Runner parallelises testcases, fires timed Steps at absolute
+          offsets from a reference point, and deep-diffs results &mdash; battle-tested at Deutsche Bahn on
+          production regression runs.</p>
       </details>
       <details class="faq-item">
         <summary class="faq-question">How do Steps work?</summary>
-        <p class="faq-answer">Steps follow a lifecycle: start() &rarr; beforeRun() &rarr; run() &rarr; afterRun() &rarr; end(). There are
-          two primary types: StepNormal (runs per testcase) and StepSingle (runs once per suite). Timing is handled by the Runner using built-in steps (DetermineStartTime, CheckStartTime, Wait). Custom steps extend these base classes and implement the run() method.</p>
+        <p class="faq-answer">Each Step instance goes through a fixed lifecycle &mdash; start() &rarr;
+          beforeRun() &rarr; run() &rarr; afterRun() &rarr; end() &mdash; so you always know where to put
+          initialisation, work, and cleanup. Extend StepNormal to run once per testcase, or StepSingle to run once
+          for the whole suite with access to every testcase environment. Timing is not your problem: the Runner
+          owns it through pre-registered steps (DetermineStartTime, CheckStartTime, Wait) and the
+          <code>timing.offsetSeconds</code> you declare in the suite.</p>
       </details>
       <details class="faq-item">
         <summary class="faq-question">What are the execution modes?</summary>
-        <p class="faq-answer">BitDiver supports two modes. Batch mode (default) iterates steps first, then testcases per
-          step — optimized for parallel execution. Normal mode iterates testcases first, then steps per testcase — each
-          testcase completes all steps before the next starts.</p>
+        <p class="faq-answer">Pick by what blocks what. Batch mode (the default) is step-major: every testcase
+          runs step 1, then every testcase runs step 2 &mdash; ideal when steps hit horizontally-scaled services
+          and the step itself is your concurrency unit. Normal mode is testcase-major: each testcase runs its
+          full pipeline before the next begins &mdash; use it when per-testcase state must be torn down
+          completely, or when steps share a non-interleavable session.</p>
       </details>
       <details class="faq-item">
         <summary class="faq-question">How do I write a custom Step?</summary>
-        <p class="faq-answer">Create a TypeScript class extending StepNormal or StepSingle. Implement the
-          run() method with your test logic. Register the step in the StepRegistry with a name matching your suite
-          configuration. Access testcase data via the typed tc getter (StepNormal) or testcases getter (StepSingle). Built-in timing steps are pre-registered and available by default.</p>
+        <p class="faq-answer">Three lines, really: extend StepNormal or StepSingle, implement <code>run()</code>,
+          and register the class in the <code>StepRegistry</code> under the name you used in the suite config.
+          Inside <code>run()</code>, use the typed <code>tc</code> getter (per-testcase) or <code>testcases</code>
+          getter (per-suite) for context and data &mdash; no stringly-typed globals. Timing and logging are
+          already wired up, so your Step only contains the work.</p>
       </details>
       <details class="faq-item">
         <summary class="faq-question">How does configuration work?</summary>
-        <p class="faq-answer">BitDiver uses Zod schemas for configuration validation with TypeScript type inference. The
-          loadConfig() function supports a priority system: environment variables override inline values, which override
-          file values, which override schema defaults. Sensitive fields are automatically masked in logs.</p>
+        <p class="faq-answer">You define a Zod schema and <code>loadConfig()</code> returns a typed, validated
+          config plus a printable representation. Values resolve by priority &mdash; environment variables beat
+          inline values, which beat the JSON file, which beats schema defaults &mdash; so the same suite runs
+          locally, in CI, and in staging without code branches. Fields you declare as secrets are automatically
+          masked everywhere the config is logged.</p>
       </details>
     </div>
   </section>
@@ -417,11 +458,12 @@
       <samp class="trust-label">[ TRUSTED BY ]</samp>
       <div class="trust-logos">
         <img src="/img/users/deutschebahn.svg" alt="Deutsche Bahn" width="110" height="76" loading="lazy" />
-        <a href="https://weltportfolio.net" target="_blank" rel="noopener">
+        <a href="https://invoice-api.xhub.io" target="_blank" rel="noopener" class="trust-logo-with-label">
           <picture>
-            <source srcset="/img/users/LogoWeltportfolio.webp" type="image/webp"><img
-              src="/img/users/LogoWeltportfolio.png" alt="Weltportfolio" width="200" height="50" loading="lazy" />
+            <source srcset="/img/users/invoice-api-xhub.webp" type="image/webp"><img
+              src="/img/users/invoice-api-xhub.png" alt="invoice-api.xhub.io" width="60" height="60" loading="lazy" />
           </picture>
+          <samp>invoice-api.xhub.io</samp>
         </a>
       </div>
     </div>
@@ -443,7 +485,7 @@
         <a href="/about.html">About</a>
         <a href="/imprint.html">Imprint</a>
         <a href="/privacyPolicy.html">Privacy Policy</a>
-        <a href="https://github.com/bitdiver/runner">GitHub</a>
+        <a href="https://github.com/xhubio/bitdiver-runner">GitHub</a>
         <a href="#" onclick="resetCookieConsent();return false;">Manage Cookies</a>
       </div>
     </div>
