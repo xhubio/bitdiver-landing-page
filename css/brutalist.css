@@ -23,6 +23,7 @@ body[data-theme="tactical"] {
   --diagram-filter: brightness(0.9) contrast(1.1);
   --icon-filter: drop-shadow(0 0 8px rgba(230, 25, 25, 0.4));
   --hero-glow: 0 0 20px rgba(234, 234, 234, 0.15), 0 0 60px rgba(234, 234, 234, 0.05);
+  --hero-glow-filter: drop-shadow(0 0 20px rgba(234, 234, 234, 0.15)) drop-shadow(0 0 60px rgba(234, 234, 234, 0.05));
   --nav-hover-glow: 0 0 8px rgba(234, 234, 234, 0.2);
   --logo-invert: invert(1) brightness(2);
 }
@@ -47,6 +48,7 @@ body[data-theme="swiss"] {
   --diagram-filter: none;
   --icon-filter: drop-shadow(0 0 4px rgba(230, 25, 25, 0.2));
   --hero-glow: none;
+  --hero-glow-filter: none;
   --nav-hover-glow: none;
   --logo-invert: none;
 }
@@ -769,16 +771,23 @@ body[data-theme="swiss"] .hero-watermark {
 }
 
 .hero-title {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: clamp(4rem, 12vw, 12rem);
-  line-height: 0.88;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
+  display: block;
+  align-self: stretch;
+  width: 100%;
   color: var(--fg-primary);
   margin: 0 0 1.5rem 0;
-  text-shadow: var(--hero-glow);
-  transition: text-shadow 0.3s ease;
+  line-height: 0;
+  font-size: 0;
+  transition: filter 0.3s ease;
+}
+
+.hero-wordmark {
+  display: block;
+  width: 100%;
+  max-width: min(100%, 62rem);
+  height: auto;
+  filter: var(--hero-glow-filter, none);
+  transition: filter 0.3s ease;
 }
 
 .hero-tagline {
